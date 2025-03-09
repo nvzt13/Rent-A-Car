@@ -8,7 +8,8 @@ import IconButton from "@mui/material/IconButton";
 import TemporaryDrawer from "./Drawer"; // Drawer component
 import Button from "@mui/material/Button";
 import Image from "next/image"; // Next.js için
-import MenuIcon from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+
 // Araba logosunu temsil eden bir resim ekleyin
 import carLogo from '/path/to/car-logo.png'; // Araba logosunun yolu
 
