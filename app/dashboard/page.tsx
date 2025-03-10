@@ -1,13 +1,11 @@
-'use client'
 import React from 'react'
-import Dashboard from '../dashboard/Dashboard'
+import Dashboard from './Dashboard'
 const page = () => {
   return (
     <div>
-      admin page
       <Dashboard />
     </div>
   )
 }
 
-export default page
+export default page;

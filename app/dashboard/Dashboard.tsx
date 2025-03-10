@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import type {} from '@mui/x-charts/themeAugmentation';
@@ -33,7 +34,6 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
       <Box sx={{ display: 'flex' }}>
         <SideMenu />
         <AppNavbar />
-        {/* Main content */}
         <Box
           component="main"
           sx={(theme) => ({
