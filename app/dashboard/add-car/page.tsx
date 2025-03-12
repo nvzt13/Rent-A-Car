@@ -8,11 +8,15 @@ const AddCar = () => {
     model: '',
     fuelType: '',
     km: '',
+    price: '',
+    status: '',
+    date: '',
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
 
   const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
+  const statuses = ['Available', 'Rented', 'In Maintenance'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,6 +42,9 @@ const AddCar = () => {
     formData.append('model', carData.model);
     formData.append('fuelType', carData.fuelType);
     formData.append('km', carData.km);
+    formData.append('price', carData.price);
+    formData.append('status', carData.status);
+    formData.append('date', carData.date);
     formData.append('image', carData.image);
 
     try {
@@ -116,6 +123,45 @@ const AddCar = () => {
         type="number"
         fullWidth
         margin="normal"
+        required
+      />
+      <TextField
+        label="Price"
+        name="price"
+        value={carData.price}
+        onChange={handleInputChange}
+        type="number"
+        fullWidth
+        margin="normal"
+        required
+      />
+      <TextField
+        label="Status"
+        name="status"
+        value={carData.status}
+        onChange={handleInputChange}
+        select
+        fullWidth
+        margin="normal"
+        required
+      >
+        {statuses.map((status) => (
+          <MenuItem key={status} value={status}>
+            {status}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        label="Date Added"
+        name="date"
+        value={carData.date}
+        onChange={handleInputChange}
+        type="date"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
         required
       />
       <Button 

@@ -1,41 +1,34 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import SelectContent from './SelectContent';
-import MenuContent from './MenuContent';
-import CardAlert from './CardAlert';
-import OptionsMenu from './OptionsMenu';
+import Link from 'next/link'; // Next.js Link importu
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
 
-const drawerWidth = 240;
+const mainListItems = [
+  { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
+  { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
+];
 
-const Drawer = styled(MuiDrawer)({
-  width: drawerWidth,
-  flexShrink: 0,
-  boxSizing: 'border-box',
-  mt: 10,
-  [`& .${drawerClasses.paper}`]: {
-    width: drawerWidth,
-    boxSizing: 'border-box',
-  },
-});
-
-export default function SideMenu() {
+export default function MenuContent() {
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        display: { xs: 'none', md: 'block' },
-        [`& .${drawerClasses.paper}`]: {
-          backgroundColor: 'background.paper',
-        },
-      }}
-    >
-        <MenuContent />
-    </Drawer>
+    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
+      <List dense>
+        {mainListItems.map((item, index) => (
+          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+            <Link href={item.link} passHref legacyBehavior>
+              <ListItemButton component="a" selected={index === 0}>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        ))}
+      </List>
+    </Stack>
   );
 }

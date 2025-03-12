@@ -1,12 +1,11 @@
 
-import ButtonUsage from "@/component/shared/Button"
-import Header from "@/component/layout/Header"
-import Footer from "@/component/layout/Footer"
-import CarCard from "@/component/shared/Card"
+import ButtonUsage from "@/components/shared/Button"
+import Header from "@/components/layout/Header"
+import Footer from "@/components/layout/Footer"
+import CarCard from "@/components/shared/Card"
 export default function Home() {
   return (
     <div>
-      <Header />
       <CarCard />
       <Footer />
     </div>

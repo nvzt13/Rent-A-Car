@@ -12,6 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // Araba logosunu temsil eden bir resim ekleyin
 import carLogo from '/path/to/car-logo.png'; // Araba logosunun yolu
+import Link from "next/link";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -51,11 +52,13 @@ const Header = () => {
             </IconButton>
           </Box>
 
-          {/* Desktop Menu - Ana Sayfa, Hakkımızda, İletişim */}
           <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+            <Link href="/">
             <Button color="inherit">Ana Sayfa</Button>
-            <Button color="inherit">Hakkımızda</Button>
-            <Button color="inherit">İletişim</Button>
+            </Link>
+
+          <Link href="/about"> <Button color="inherit">Hakkımızda</Button></Link>
+            <Link href="contact"><Button color="inherit">İletişim</Button></Link>
           </Box>
         </Toolbar>
       </StyledAppBar>
