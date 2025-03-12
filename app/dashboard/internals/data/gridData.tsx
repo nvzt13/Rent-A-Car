@@ -83,16 +83,16 @@ export const columns: GridColDef[] = [
   { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
   {
     field: "status",
-    headerName: "Statu",
+    headerName: "Durum",
     flex: 1,
     minWidth: 150,
     renderCell: (params) => renderStatus(params.value as any),
   },
-  { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 }, // Fiyat sütunu eklendi
-  { field: "model", headerName: "Model", flex: 1, minWidth: 100 },
-  { field: "fuelType", headerName: "Fuel Type", flex: 1, minWidth: 100 },
-  { field: "km", headerName: "Kilometers", flex: 1, minWidth: 100 },
-  {field: "date", headerName: "Tarih", flex: 1, minWidth: 150 },
+  { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
+  { field: "day", headerName: "Gün", flex: 1, minWidth: 150 },
+  { field: "initialDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },
+  {field: "endDate", headerName: "Teslim Tarihi", flex: 1, minWidth: 150 },
+  {field: "kar", headerName: "Gelir", flex: 1, minWidth: 150 },
 ];
 
 export const rows: GridRowsProp = [
@@ -101,19 +101,19 @@ export const rows: GridRowsProp = [
     name: "Toyota Corolla",
     status: "Online",
     price: 500, // Fiyat eklendi
-    model: "2021",
-    fuelType: "Gasoline",
-    km: 15000,
-    date: "03-27 ",
+    day:5,
+    initialDate: "03-27 ",
+    endDate: "03-27 ",
+    kar:'6000'
   },
   {
     id: 2,
     name: "Tesla Model S",
     status: "Offline",
     price: 750, // Fiyat eklendi
-    model: "2020",
-    fuelType: "Electric",
-    km: 5000,
-    date: "06-16",
+    day: 5 + "  (2)",
+    initialDate: "03-27 ",
+    endDate: "03-27 ",
+    kar: "15000 ",
   },
 ];
