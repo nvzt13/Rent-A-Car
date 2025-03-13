@@ -1,19 +1,21 @@
 'use client'
 import React, { useState } from 'react';
 import { TextField, Button, MenuItem, Typography, Box, Card, CardMedia } from '@mui/material';
+import { Car } from '@prisma/client';
 
 const AddCar = () => {
-  const [carData, setCarData] = useState({
+  const [carData, setCarData] = useState<Car>({
+    id: 0,
     name: '',
     carModel: '',
     fuelType: '',
-    km: '',
-    price: '',
+    km: 0,
+    price: 0,
     status: '',
-    startDate: '',
-    endDate: '',
+    startDate: new Date(),
+    endDate: new Date(),
     carType: '',
-    image: null,
+    image: "sedrfftgtgghf"
   });
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -21,7 +23,7 @@ const AddCar = () => {
   const statuses = ['Offline', 'Online'];
   const carModel = ['Premium', 'Ekonomi', 'Suv'];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setCarData({
       ...carData,
@@ -52,25 +54,25 @@ const AddCar = () => {
     formData.append('image', carData.image);
   }
 
-  // Log the FormData contents
-  for (let [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-  }
 
   try {
-    const response = await fetch('/api/car', {
+    const response = await fetch('/api/v1/car', {
       method: 'POST',
       body: formData,
     });
 
     if (response.ok) {
       alert('Car added successfully');
+      console.log(response.text)
     } else {
       alert('Failed to add car');
+      console.log(response)
     }
   } catch (error) {
     console.error('Error:', error);
     alert('Error adding car');
+    console.log(error)
+
   }
 };
 
@@ -185,9 +187,6 @@ const AddCar = () => {
         type="date"
         fullWidth
         margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
         required
       />
       <TextField
@@ -198,9 +197,6 @@ const AddCar = () => {
         type="date"
         fullWidth
         margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
         required
       />
       <Button 
