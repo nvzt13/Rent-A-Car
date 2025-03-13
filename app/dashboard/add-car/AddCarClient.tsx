@@ -2,21 +2,19 @@
 import React, { useState } from 'react';
 import { TextField, Button, MenuItem, Typography, Box, Card, CardMedia } from '@mui/material';
 import { Car } from '@prisma/client';
+import {CreateCar} from '@/type/types';
 
 const AddCar = () => {
-  const [carData, setCarData] = useState<Car>({
-    id: 0,
+  const [carData, setCarData] = useState<CreateCar>({
     name: '',
     carModel: '',
     fuelType: '',
-    km: 0,
-    price: 0,
-    status: '',
-    startDate: new Date(),
-    endDate: new Date(),
+    km: null,
+    price: null,
     carType: '',
-    image: "sedrfftgtgghf"
+    image: ""
   });
+  const [updateCarData, setUpdateCarData] = useState(false)
   const [imagePreview, setImagePreview] = useState(null);
 
   const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
@@ -37,23 +35,29 @@ const AddCar = () => {
       ...carData,
       image: file,
     });
-    setImagePreview(URL.createObjectURL(file)); // Resim önizlemesi için
+    setImagePreview(URL.createObjectURL(file));
   };
-
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCarData({
+      ...carData,
+      image: reader.resul as string,
+    });
+    setImagePreview(URL.createObjectURL(file));// Set image as base64 string
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
   const handleSubmit = async (e) => {
   e.preventDefault();
-  
   const formData = new FormData();
-
-  // Append each field from carData to the formData object
   for (const key in carData) {
     formData.append(key, carData[key]);
   }
-
-  if (carData.image) {
-    formData.append('image', carData.image);
-  }
-
 
   try {
     const response = await fetch('/api/v1/car', {
@@ -163,7 +167,9 @@ const AddCar = () => {
         margin="normal"
         required
       />
-      <TextField
+           {
+       updateCarData ?  <>
+         <TextField
         label="Status"
         name="status"
         value={carData.status}
@@ -199,6 +205,8 @@ const AddCar = () => {
         margin="normal"
         required
       />
+       </> : null
+     }
       <Button 
         variant="contained" 
         component="label" 
@@ -207,7 +215,7 @@ const AddCar = () => {
         color="secondary"
       >
         Upload Car Image
-        <input type="file" hidden onChange={handleFileChange} />
+        <input type="file" hidden onChange={handleImageChange} />
       </Button>
 
       {imagePreview && (

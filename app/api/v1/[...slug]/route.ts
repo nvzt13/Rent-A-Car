@@ -1,20 +1,69 @@
-import { Car } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET (request: NextRequest, {params}: {params:
+Promise<{slug: string}>}) {
+  const { slug } = await params;
+  console.log(slug)
+  try{
+    const allCars = await prisma.car.findMany()
+  return NextResponse.json({message: "Get cards successfully", data: allCars}, {status:200})
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+
+// POST
 export async function POST(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const formData = await request.formData();
+  try {
+    const formData = await request.formData();
+    console.log('Form data:', formData);
 
-  const requiredFields = ['id', 'name', 'carModel', 'fuelType', 'km', 'price', 'status', 'startDate', 'endDate', 'carType', 'image'];
+    const requiredFields = [ 'name', 'carModel', 'fuelType', 'km', 'price','carType', 'image'];
 
-  const missingFields = requiredFields.filter((field) => !formData.get(field));
-console.log(missingFields)
-  if (missingFields.length > 0) {
-    return NextResponse.json({ message: `Bad request! Missing fields: ${missingFields.join(', ')}` }, { status: 400 });
+    const missingFields = requiredFields.filter((field) => !formData.get(field));
+    console.log('Missing fields:', missingFields);
+
+    if (missingFields.length > 0) {
+      return NextResponse.json({ message: `Bad request! Missing fields: ${missingFields.join(', ')}` }, { status: 400 });
+    }
+
+    // Convert formData to an object
+    const data = Object.fromEntries(formData.entries());
+    console.log('Data object:', data);
+
+    // Make sure the values are properly formatted for Prisma
+    const carData = {
+      name: data.name || null,
+      carModel: data.carModel || null,
+      fuelType: data.fuelType || null,
+      km: data.km ? Number(data.km) : null,
+      price: data.price ? Number(data.price) : null,
+      carType: data.carType || null,
+      image: data.image || null,
+    };
+
+    console.log('Car data:', carData);
+
+    // Check if any required data is null
+    if (Object.values(carData).some(value => value === null)) {
+      console.log('Invalid data:', carData);
+      return NextResponse.json({ message: "Invalid data. Some fields are null or not in correct format." }, { status: 400 });
+    }
+
+    // Create the car in the database
+    const createCar = await prisma.car.create({
+      data: carData,
+    });
+
+    console.log('Car created:', createCar);
+    return NextResponse.json({ message: "Car created successfully!", data: createCar });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ message: `Error creating car: ${error.message}` }, { status: 500 });
   }
-
-  const createCar = await prisma.car.create({})
-  return NextResponse.json({ message: "All required fields are present!", data: Object.fromEntries(formData) });
 }

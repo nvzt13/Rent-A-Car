@@ -24,8 +24,9 @@ model Car {
   carType   String
   km        Int
   price     Int
-  status    String
-  startDate DateTime
-  endDate   DateTime
+  status    String? @default("Offline") 
+  startDate DateTime? @default(now())
+  endDate   DateTime? @default(now())
   image     String
+  createdAt  DateTime? @default(now())
 }

@@ -18,10 +18,6 @@ import CurrencyLiraIcon from '@mui/icons-material/CurrencyLira';
 import PhoneIcon from '@mui/icons-material/Phone';
 
 
-// Örnek veriler
-const carModel = 'Premium'; // Ekonomi, SUV, Premium olabilir
-const dailyPrice = 250; // Günlük kiralama ücreti
-
 // Dinamik etiket rengi ve içeriği
 const getChipColor = (model) => {
   switch (model) {
@@ -35,18 +31,19 @@ const getChipColor = (model) => {
       return 'default';
   }
 };
-
-export default function CarCard() {
+import Car from '@prisma/client'
+export default function CarCard({car}) {
+  console.log(car)
   return (
     <Card sx={{ maxWidth: 345, borderRadius: 5, boxShadow: 3, m: 2, position: 'relative' }}>
       <Chip 
-        label={carModel} 
-        color={getChipColor(carModel)} 
+        label={car.carType} 
+        color={getChipColor(car.carType)} 
         sx={{ position: 'absolute', top: 10, right: 10, zIndex: 1 }} 
       />
       <CardMedia
         sx={{ height: 180 }}
-        image="/car.jpeg"
+        image={car.image}
         title="Car Image"
       />
 <CardContent>
@@ -58,7 +55,7 @@ export default function CarCard() {
     }}
   >
     <Typography gutterBottom variant="h5" component="div">
-      Renault Clio
+      {car.name}
     </Typography>
 
     <Box 
@@ -84,7 +81,7 @@ export default function CarCard() {
           marginRight: '16px' 
         }}
       >
-        {dailyPrice}
+        {car.price}
         <CurrencyLiraIcon/>
       </Box>
     </Box>
@@ -93,15 +90,15 @@ export default function CarCard() {
       <CardActions sx={{ justifyContent: 'space-between', padding: '16px' }}>
         <IconButton aria-label="km" sx={{ display: 'flex', flexDirection: 'column' }}>
           <SpeedIcon />
-          <Typography variant="caption">10.000 km</Typography>
+          <Typography variant="caption"> {car.km}</Typography>
         </IconButton>
         <IconButton aria-label="gearbox" sx={{ display: 'flex', flexDirection: 'column' }}>
           <DriveEtaIcon />
-          <Typography variant="caption">2018</Typography>
+          <Typography variant="caption">{car.carModel}</Typography>
         </IconButton>
         <IconButton aria-label="fuel" sx={{ display: 'flex', flexDirection: 'column' }}>
           <LocalGasStationIcon />
-          <Typography variant="caption">Dizel</Typography>
+          <Typography variant="caption">{car.fuelType}</Typography>
         </IconButton>
         <IconButton aria-label="gearbox" sx={{ display: 'flex', flexDirection: 'column' }}>
           <SettingsIcon />
