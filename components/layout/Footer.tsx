@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import FacebookIcon from "@mui/icons-material/Facebook";

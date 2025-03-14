@@ -20,10 +20,14 @@
     "@mui/x-tree-view": "^7.26.0",
     "@prisma/client": "^6.5.0",
     "@react-spring/web": "^9.7.5",
+    "@reduxjs/toolkit": "^2.6.1",
     "dayjs": "^1.11.13",
+    "install": "^0.13.0",
     "next": "15.2.1",
+    "npm": "^11.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-redux": "^9.2.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {

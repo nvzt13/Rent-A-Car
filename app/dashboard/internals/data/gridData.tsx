@@ -79,7 +79,6 @@ export function renderAvatar(
 }
 
 export const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", flex: 0.3, minWidth: 50 },
   { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
   {
     field: "status",
@@ -89,10 +88,8 @@ export const columns: GridColDef[] = [
     renderCell: (params) => renderStatus(params.value as any),
   },
   { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
-  { field: "day", headerName: "Gün", flex: 1, minWidth: 150 },
-  { field: "initialDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },
+  { field: "startDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },
   {field: "endDate", headerName: "Teslim Tarihi", flex: 1, minWidth: 150 },
-  {field: "kar", headerName: "Gelir", flex: 1, minWidth: 150 },
 ];
 
 export const rows: GridRowsProp = [

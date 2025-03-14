@@ -143,7 +143,7 @@ const AddCar = () => {
       <TextField
         label="Kilometers"
         name="km"
-        value={carData.km}
+        value={carData.km | null}
         onChange={handleInputChange}
         type="number"
         fullWidth
@@ -153,7 +153,7 @@ const AddCar = () => {
       <TextField
         label="Price"
         name="price"
-        value={carData.price}
+        value={carData.price | null}
         onChange={handleInputChange}
         type="number"
         fullWidth
