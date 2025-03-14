@@ -1,8 +1,8 @@
 "use client"
 import React, {useEffect, useState} from 'react'
-import Car from '@prisma/client'
 import CarCard from "@/components/shared/Card"
 import Grid from '@mui/material/Grid';
+import { Car } from '@prisma/client';
 
 const PageClient = () => {
   const [cars, setCars] = useState<Car[]>([])

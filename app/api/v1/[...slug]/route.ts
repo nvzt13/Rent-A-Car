@@ -64,6 +64,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     
   } catch (error) {
     console.error('Error:', error);
-    return NextResponse.json({ message: `Error creating car: ${error.message}` }, { status: 500 });
+    return NextResponse.json({ message: `Error creating car: ${error}` }, { status: 500 });
   }
 }

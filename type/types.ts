@@ -1,12 +1,12 @@
 export interface CreateCar {
-  name:      String;
-  carModel:  String;
-  fuelType:  String;
-  carType:   String;
-  km:        Int;
-  price:     Int;
-  status:    String?;
-  startDate: DateTime?;
-  endDate:   DateTime?;
-  image:     String;
+  name:      string;
+  carModel:  string;
+  fuelType:  string;
+  carType:   string;
+  km:        number | null;
+  price:     number | null;
+  status?:   string;
+  startDate?: Date;  
+  endDate?:   Date;  
+  image:     string;
 }

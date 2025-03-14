@@ -15,7 +15,7 @@ const AddCar = () => {
     image: ""
   });
   const [updateCarData, setUpdateCarData] = useState(false)
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
   const statuses = ['Offline', 'Online'];
@@ -29,22 +29,15 @@ const AddCar = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setCarData({
-      ...carData,
-      image: file,
-    });
-    setImagePreview(URL.createObjectURL(file));
-  };
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+  const handleImageChange = (e:any) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCarData({
       ...carData,
-      image: reader.resul as string,
+      image: reader.result as string,
     });
     setImagePreview(URL.createObjectURL(file));// Set image as base64 string
       };
@@ -52,7 +45,7 @@ const AddCar = () => {
     }
   };
   
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
   e.preventDefault();
   const formData = new FormData();
   for (const key in carData) {
