@@ -3,6 +3,9 @@ import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import { GridCellParams, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import { IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type SparkLineData = number[];
 
@@ -78,6 +81,8 @@ export function renderAvatar(
   );
 }
 
+ 
+
 export const columns: GridColDef[] = [
   { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
   {
@@ -89,28 +94,37 @@ export const columns: GridColDef[] = [
   },
   { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
   { field: "startDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },
-  {field: "endDate", headerName: "Teslim Tarihi", flex: 1, minWidth: 150 },
+  { field: "endDate", headerName: "Teslim Tarihi", flex: 1, minWidth: 150 },
+  {
+    field: "actions",
+    headerName: "İşlemler",
+    flex: 1,
+    minWidth: 150,
+    sortable: false,
+    renderCell: (params) => (
+      <>
+        <IconButton onClick={() => handleEdit(params.row)}>
+          <EditIcon />
+        </IconButton>
+        <IconButton onClick={() => handleDelete(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      </>
+    ),
+  },
 ];
 
-export const rows: GridRowsProp = [
-  {
-    id: 1,
-    name: "Toyota Corolla",
-    status: "Online",
-    price: 500, // Fiyat eklendi
-    day:5,
-    initialDate: "03-27 ",
-    endDate: "03-27 ",
-    kar:'6000'
-  },
-  {
-    id: 2,
-    name: "Tesla Model S",
-    status: "Offline",
-    price: 750, // Fiyat eklendi
-    day: 5 + "  (2)",
-    initialDate: "03-27 ",
-    endDate: "03-27 ",
-    kar: "15000 ",
-  },
-];
+// Düzenleme ve silme işlemleri için fonksiyonlar
+const handleEdit = (row) => {
+  // Düzenleme işlemini burada yapabilirsiniz
+  console.log("Edit row:", row);
+};
+
+const handleDelete = (id) => {
+  // Silme işlemini burada yapabilirsiniz
+  console.log("Delete row with ID:", id);
+};
+  const handleUpdate = (appointment: Appointment) => {
+    const encodedAppointment = encodeURIComponent(JSON.stringify(appointment));
+    router.push(`/randevu?appointmentToBeUpdated=${encodedAppointment}`);
+  };
