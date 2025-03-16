@@ -60,7 +60,7 @@ const Footer = () => {
             </Link>
             <br />
             {/* Admin Giriş Linki */}
-            <Link href="/dashboard" color="inherit" underline="none" variant="body2">
+            <Link href="/signin" color="inherit" underline="none" variant="body2">
               Admin Girişi
             </Link>
           </Grid>

@@ -1,94 +1,113 @@
-'use client'
-import React, { useState } from 'react';
-import { TextField, Button, MenuItem, Typography, Box, Card, CardMedia } from '@mui/material';
-import { Car } from '@prisma/client';
-import {CreateCar} from '@/type/types';
+"use client";
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Typography,
+  Box,
+  Card,
+  CardMedia,
+} from "@mui/material";
+import { CreateCar } from "@/type/types";
+import { useSearchParams } from "next/navigation";
 
 const AddCar = () => {
-  const [carData, setCarData] = useState<CreateCar>({
-    name: '',
-    carModel: '',
-    fuelType: '',
-    km: null,
-    price: null,
-    carType: '',
-    image: ""
-  });
-  const [updateCarData, setUpdateCarData] = useState(false)
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const carToBeUpdated = searchParams.get("update-car");
+  const parseCarToBeUpdated = carToBeUpdated
+    ? JSON.parse(decodeURIComponent(carToBeUpdated))
+    : null;
 
-  const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
-  const statuses = ['Offline', 'Online'];
-  const carModel = ['Premium', 'Ekonomi', 'Suv'];
+  const [carData, setCarData] = useState<CreateCar>({
+    name: parseCarToBeUpdated?.name || "",
+    carModel: parseCarToBeUpdated?.carModel || "",
+    fuelType: parseCarToBeUpdated?.fuelType || "",
+    km: parseCarToBeUpdated?.km || "",
+    price: parseCarToBeUpdated?.price || "",
+    carType: parseCarToBeUpdated?.carType || "",
+    image: parseCarToBeUpdated?.image || "",
+    status: parseCarToBeUpdated?.status || "",
+    startDate: parseCarToBeUpdated?.startDate || "",
+    endDate: parseCarToBeUpdated?.endDate || "",
+  });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fuelTypes = ["Gasoline", "Diesel", "Electric", "Hybrid"];
+  const statuses = ["Offline", "Online"];
+  const carModel = ["Premium", "Ekonomi", "Suv"];
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setCarData({
-      ...carData,
-      [name]: value,
-    });
-  };
 
+    if (name === "image") {
+      setCarData({
+        ...carData,
+        [name]: value,
+      });
 
-  const handleImageChange = (e:any) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCarData({
-      ...carData,
-      image: reader.result as string,
-    });
-    setImagePreview(URL.createObjectURL(file));// Set image as base64 string
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const handleSubmit = async (e:any) => {
-  e.preventDefault();
-  const formData = new FormData();
-  for (const key in carData) {
-    formData.append(key, carData[key]);
-  }
-
-  try {
-    const response = await fetch('/api/v1/car', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.ok) {
-      alert('Car added successfully');
-      console.log(response.text)
+      setImagePreview(value);
     } else {
-      alert('Failed to add car');
-      console.log(response)
+      setCarData({
+        ...carData,
+        [name]: value,
+      });
     }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Error adding car');
-    console.log(error)
+  };
 
-  }
-};
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const formData = new FormData();
+    Object.entries(carData).forEach(([key, value]) => {
+      formData.append(key, String(value ?? ""));
+    });
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+
+    const method = parseCarToBeUpdated ? "PUT" : "POST";
+    try {
+      const response = await fetch(
+        `/api/v1/car/${parseCarToBeUpdated ? parseCarToBeUpdated.id : ""}`,
+        {
+          method: method,
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert(
+          parseCarToBeUpdated
+            ? "Update car successfuly"
+            : "Car added successfully"
+        );
+        console.log(response);
+      } else {
+        alert("Failed to add car");
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error adding car");
+      console.log(error);
+    }
+  };
 
   return (
-    <Box 
-      component="form" 
-      onSubmit={handleSubmit} 
-      sx={{ 
-        maxWidth: 400, 
-        mx: 'auto', 
-        mt: 4, 
-        p: 3, 
-        bgcolor: '#f7f7f7', 
-        borderRadius: 2, 
-        boxShadow: 3 
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        maxWidth: 400,
+        mx: "auto",
+        mt: 4,
+        p: 3,
+        bgcolor: "#f7f7f7",
+        borderRadius: 2,
+        boxShadow: 3,
       }}
     >
       <Typography variant="h5" gutterBottom align="center" color="primary">
-        Add New Car
+        {carToBeUpdated ? "Update Car" : "Add Car"}
       </Typography>
       <TextField
         label="Car Name"
@@ -143,7 +162,7 @@ const AddCar = () => {
       <TextField
         label="Kilometers"
         name="km"
-        value={carData.km | null}
+        value={carData?.km}
         onChange={handleInputChange}
         type="number"
         fullWidth
@@ -153,16 +172,14 @@ const AddCar = () => {
       <TextField
         label="Price"
         name="price"
-        value={carData.price | null}
+        value={carData?.price}
         onChange={handleInputChange}
         type="number"
         fullWidth
         margin="normal"
         required
       />
-           {
-       updateCarData ?  <>
-         <TextField
+      <TextField
         label="Status"
         name="status"
         value={carData.status}
@@ -179,37 +196,31 @@ const AddCar = () => {
         ))}
       </TextField>
       <TextField
-        label="Alış Tarihi"
         name="startDate"
         value={carData.startDate}
         onChange={handleInputChange}
         type="date"
         fullWidth
         margin="normal"
-        required
       />
       <TextField
-        label="Teslim Tarihi"
         name="endDate"
         value={carData.endDate}
         onChange={handleInputChange}
         type="date"
         fullWidth
         margin="normal"
+      />
+      <TextField
+        label="URL"
+        name="image"
+        value={carData.image}
+        onChange={handleInputChange}
+        type="text"
+        fullWidth
+        margin="normal"
         required
       />
-       </> : null
-     }
-      <Button 
-        variant="contained" 
-        component="label" 
-        fullWidth 
-        sx={{ my: 2 }}
-        color="secondary"
-      >
-        Upload Car Image
-        <input type="file" hidden onChange={handleImageChange} />
-      </Button>
 
       {imagePreview && (
         <Card sx={{ my: 2 }}>
@@ -222,14 +233,14 @@ const AddCar = () => {
         </Card>
       )}
 
-      <Button 
-        type="submit" 
-        variant="contained" 
-        color="primary" 
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
         fullWidth
         sx={{ py: 1.5 }}
       >
-        Add Car
+        {parseCarToBeUpdated ? "Update Car" : "Add Car"}
       </Button>
     </Box>
   );

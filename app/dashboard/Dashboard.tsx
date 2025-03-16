@@ -2,9 +2,8 @@
 import * as React from "react";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 import type {} from "@mui/x-charts/themeAugmentation";
-import type {} from "@mui/x-data-grid-pro/themeAugmentation";
 import type {} from "@mui/x-tree-view/themeAugmentation";
-import { alpha } from "@mui/material/styles";
+import { alpha, Theme, experimental_sx as sx } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -35,13 +34,12 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
         <AppNavbar />
         <Box
           component="main"
-          sx={(theme) => ({
+          sx={{
             flexGrow: 1,
-            backgroundColor: theme.vars
-              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-              : alpha(theme.palette.background.default, 1),
+            backgroundColor: (theme) =>
+              alpha(theme.palette.background.default, 1),
             overflow: "auto",
-          })}
+          }}
         >
           <Stack
             spacing={2}

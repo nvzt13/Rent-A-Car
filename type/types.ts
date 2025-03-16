@@ -3,8 +3,8 @@ export interface CreateCar {
   carModel:  string;
   fuelType:  string;
   carType:   string;
-  km:        number | null;
-  price:     number | null;
+  km:        number | string;
+  price:     number | string;
   status?:   string;
   startDate?: Date;  
   endDate?:   Date;  
