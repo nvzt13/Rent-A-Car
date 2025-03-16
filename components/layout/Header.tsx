@@ -9,9 +9,6 @@ import TemporaryDrawer from "./Drawer"; // Drawer component
 import Button from "@mui/material/Button";
 import Image from "next/image"; // Next.js için
 import MenuIcon from '@mui/icons-material/Menu';
-
-// Araba logosunu temsil eden bir resim ekleyin
-import carLogo from '/path/to/car-logo.png'; // Araba logosunun yolu
 import Link from "next/link";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -26,11 +23,12 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 const Header = () => {
   const [open, setOpen] = React.useState(false);
 
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen:boolean) => () => {
     setOpen(newOpen);
   };
 
   return (
+    <div>
     <Box sx={{ flexGrow: 1 }}>
       <StyledAppBar position="static">
         <Toolbar>
@@ -63,6 +61,7 @@ const Header = () => {
         </Toolbar>
       </StyledAppBar>
     </Box>
+    </div>
   );
 };
 

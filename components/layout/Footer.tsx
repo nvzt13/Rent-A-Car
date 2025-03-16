@@ -28,6 +28,7 @@ const StyledFooter = styled(Box)(({ theme }) => ({
 
 const Footer = () => {
   return (
+    <div>
     <StyledFooter component="footer">
       <Container maxWidth="lg">
         <Grid container spacing={4}>
@@ -105,6 +106,7 @@ const Footer = () => {
         </Box>
       </Container>
     </StyledFooter>
+    </div>
   );
 };
 

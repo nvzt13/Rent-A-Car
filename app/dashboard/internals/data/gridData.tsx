@@ -1,30 +1,12 @@
-"use client";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import { GridCellParams, GridRowsProp, GridColDef } from "@mui/x-data-grid";
-import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import CircularProgress from "@mui/material/CircularProgress"; // Import loading icon
+import { GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
-
-type SparkLineData = number[];
-
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString("en-US", {
-    month: "short",
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
-  }
-  return days;
-}
 
 
 function renderStatus(status: "Online" | "Offline") {
@@ -32,7 +14,6 @@ function renderStatus(status: "Online" | "Offline") {
     Online: "success",
     Offline: "default",
   };
-
   return <Chip label={status} color={colors[status]} size="small" />;
 }
 
@@ -57,7 +38,6 @@ export function renderAvatar(
   );
 }
 
-// Add type for car
 interface Car {
   id: string;
   name: string;
@@ -67,31 +47,32 @@ interface Car {
   endDate: string;
 }
 
-// Create a component for the grid actions
 function GridActions({
   params,
   onEdit,
   onDelete,
+  loading,
 }: {
   params: GridCellParams;
   onEdit: (car: Car) => void;
   onDelete: (id: string) => void;
+  loading: boolean; // Add loading state for individual rows
 }) {
   return (
     <>
-      <IconButton onClick={() => onEdit(params.row as Car)}>
-        <EditIcon />
+      <IconButton onClick={() => onEdit(params.row as Car)} disabled={loading}>
+        {loading ? <CircularProgress size={24} /> : <EditIcon />}
       </IconButton>
-      <IconButton onClick={() => onDelete(params.row.id)}>
-        <DeleteIcon />
+      <IconButton onClick={() => onDelete(params.row.id)} disabled={loading}>
+        {loading ? <CircularProgress size={24} /> : <DeleteIcon />}
       </IconButton>
     </>
   );
 }
 
-// Create a hook to handle grid actions
 export function useGridActions() {
   const router = useRouter();
+  const [loadingRowId, setLoadingRowId] = React.useState<string | null>(null); // Track the ID of the loading row
 
   const handleEdit = (car: Car) => {
     const encodeCar = encodeURIComponent(JSON.stringify(car));
@@ -99,6 +80,7 @@ export function useGridActions() {
   };
 
   const handleDelete = async (id: string) => {
+    setLoadingRowId(id); // Set the loading row ID
     try {
       const response = await fetch(`/api/v1/car/${id}`, {
         method: "DELETE",
@@ -110,15 +92,16 @@ export function useGridActions() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingRowId(null); // Reset loading state after the action is completed
     }
   };
 
-  return { handleEdit, handleDelete };
+  return { handleEdit, handleDelete, loadingRowId };
 }
 
-// Export columns with the actions using the hook
 export function useGridColumns() {
-  const { handleEdit, handleDelete } = useGridActions();
+  const { handleEdit, handleDelete, loadingRowId } = useGridActions();
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
@@ -143,6 +126,7 @@ export function useGridColumns() {
           params={params}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          loading={loadingRowId === params.row.id} // Only show the loading icon for the current row
         />
       ),
     },
@@ -150,10 +134,3 @@ export function useGridColumns() {
 
   return columns;
 }
-
-/*
-  const handleUpdate = (appointment: Appointment) => {
-    const encodedAppointment = encodeURIComponent(JSON.stringify(appointment));
-    router.push(`/randevu?appointmentToBeUpdated=${encodedAppointment}`);
-  };
-*/

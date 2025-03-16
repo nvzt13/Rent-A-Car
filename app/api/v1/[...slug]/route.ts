@@ -2,28 +2,56 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  try {
-    const allCars = await prisma.car.findMany();
-    return NextResponse.json(
-      { message: "Get cards successfully", data: allCars },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.log(error);
+  const [table, username, password] = slug
+  switch (table) {
+    case "car":
+      try {
+        const allCars = await prisma.car.findMany();
+        return NextResponse.json(
+          { message: "Get cars successfully", data: allCars },
+          { status: 200 }
+        );
+      } catch (error) {
+        console.log("Error fetching cars:", error);
+        return NextResponse.json(
+          { message: "Failed to fetch cars", error: error },
+          { status: 500 }
+        );
+      }
+
+    case "admin":
+      try {
+        const admin = await prisma.admin.findFirst({where:{id:1}})
+        if(admin?.name === username && admin?.password === password){
+          return NextResponse.json({ message: "True" }, { status: 200 });
+        }
+      } catch (error) {
+        console.log("Error in admin case:", error);
+        return NextResponse.json(
+          { message: "Failed in admin case", error: error },
+          { status: 500 }
+        );
+      }
+
+    default:
+      return NextResponse.json(
+        { message: "Invalid slug" },
+        { status: 400 }
+      );
   }
 }
+
 
 // POST
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = await params;
 
   try {
     const formData = await request.formData();
@@ -122,6 +150,7 @@ export async function DELETE(
     });
     return NextResponse.json({ message: "Car deleted!", data: deletedCar });
   } catch (error) {
+    console.log(error)
     return NextResponse.json(
       { message: "Error deleting car" },
       { status: 500 }
@@ -136,6 +165,7 @@ export async function PUT(
 ) {
   const { slug } = await params;
   const [table, id] = slug;
+  console.log(table)
   const formData = await request.formData();
   console.log(formData);
 
@@ -202,6 +232,8 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
+    console.log(error
+    )
     return NextResponse.json(
       { message: "Error updating car" },
       { status: 500 }

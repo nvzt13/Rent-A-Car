@@ -4,13 +4,14 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 
-export default function TemporaryDrawer({ open, toggleDrawer }) {
+interface DrawerProps {
+  open: boolean;
+  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+}
 
+export default function TemporaryDrawer({ open, toggleDrawer }: DrawerProps) {
   const DrawerList = (
     <Box
       sx={{
@@ -33,7 +34,7 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
           textAlign: 'center',
         }}
       >
-        {['Ana Sayfa', 'Hakkımızda', 'İletişim'].map((text, index) => (
+        {['Ana Sayfa', 'Hakkımızda', 'İletişim'].map((text) => (
           <ListItem key={text} disablePadding sx={{ justifyContent: 'center' }}>
             <ListItemButton sx={{ justifyContent: 'center' }}>
               <ListItemText primary={text} sx={{ textAlign: 'center' }} />

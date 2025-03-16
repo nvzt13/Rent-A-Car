@@ -1,40 +1,20 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import CarCard from "@/components/shared/Card";
 import Skeleton from '@mui/material/Skeleton';
 import { useAppSelector } from '@/lib/hooks';
-import { useDispatch } from 'react-redux';
-import { setCars } from '@/lib/slice/carSlice';  
 import {Grid2} from '@mui/material'; // Grid2'nin doğru yolu
 
 const PageClient = () => {
-  const dispatch = useDispatch();
   const cars = useAppSelector((state: { cars: { cars: any[] } }) => state.cars.cars); 
-
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const response = await fetch('/api/v1/car');
-        if (response.ok) {
-          const carsData = await response.json();
-          dispatch(setCars(carsData.data));
-        } else {
-          alert('Arabalar yolda kaldı');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCards();
-  }, [dispatch]);
+  
 
   return (
-    <div style={{ backgroundColor: '#121212', padding: '20px', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#fff', padding: '20px', minHeight: '100vh' }}>
       <Grid2 
         container 
-        spacing={3} 
+        spacing={1} 
         sx={{ 
           justifyContent: 'center',  
           alignItems: 'flex-start', 

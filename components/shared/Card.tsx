@@ -33,11 +33,10 @@ const getChipColor = (model: string) => {
 };
 
 export default function CarCard({ car }: { car: Car }) {
-  console.log(car);
   return (
     <Card
       sx={{
-        maxWidth: 345,
+        width: "100%",
         borderRadius: 5,
         boxShadow: 3,
         m: 2,
@@ -50,106 +49,112 @@ export default function CarCard({ car }: { car: Car }) {
         sx={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}
       />
       <CardMedia sx={{ height: 180 }} image={car.image} title="Car Image" />
-      <CardContent>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography gutterBottom variant="h5" component="div">
-            {car.name}
-          </Typography>
-
+      <Box
+        sx={{
+          bgcolor: "#e6f5f3",
+        }}
+      >
+        <CardContent>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
             }}
           >
+            <Typography gutterBottom variant="h5" component="div">
+              {car.name}
+            </Typography>
+
             <Box
               sx={{
-                height: "40px",
-                width: "1px",
-                backgroundColor: "#ccc",
-                marginRight: "16px",
-              }}
-            />
-            <Box
-              sx={{
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: "green",
-                marginRight: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {car.price}
-              <CurrencyLiraIcon />
+              <Box
+                sx={{
+                  height: "40px",
+                  width: "1px",
+                  backgroundColor: "#ccc",
+                  marginRight: "16px",
+                }}
+              />
+              <Box
+                sx={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "green",
+                  marginRight: "16px",
+                }}
+              >
+                {car.price}
+                <CurrencyLiraIcon />
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </CardContent>
-      <CardActions sx={{ justifyContent: "space-between", padding: "16px" }}>
-        <IconButton
-          aria-label="km"
-          sx={{ display: "flex", flexDirection: "column" }}
+        </CardContent>
+        <CardActions sx={{ justifyContent: "space-between", padding: "16px" }}>
+          <IconButton
+            aria-label="km"
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <SpeedIcon />
+            <Typography variant="caption"> {car.km}</Typography>
+          </IconButton>
+          <IconButton
+            aria-label="gearbox"
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <DriveEtaIcon />
+            <Typography variant="caption">{car.carModel}</Typography>
+          </IconButton>
+          <IconButton
+            aria-label="fuel"
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <LocalGasStationIcon />
+            <Typography variant="caption">{car.fuelType}</Typography>
+          </IconButton>
+          <IconButton
+            aria-label="gearbox"
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <SettingsIcon />
+            <Typography variant="caption">Manuel</Typography>
+          </IconButton>
+        </CardActions>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            textAlign: "center",
+          }}
         >
-          <SpeedIcon />
-          <Typography variant="caption"> {car.km}</Typography>
-        </IconButton>
-        <IconButton
-          aria-label="gearbox"
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <DriveEtaIcon />
-          <Typography variant="caption">{car.carModel}</Typography>
-        </IconButton>
-        <IconButton
-          aria-label="fuel"
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <LocalGasStationIcon />
-          <Typography variant="caption">{car.fuelType}</Typography>
-        </IconButton>
-        <IconButton
-          aria-label="gearbox"
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <SettingsIcon />
-          <Typography variant="caption">Manuel</Typography>
-        </IconButton>
-      </CardActions>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "16px",
-          textAlign: "center",
-        }}
-      >
-        {/* İlk buton: WhatsApp */}
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<WhatsAppIcon />}
-          href="https://wa.me/5057453874"
-        >
-          Mesaj
-        </Button>
+          {/* İlk buton: WhatsApp */}
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<WhatsAppIcon />}
+            href="https://wa.me/5057453874"
+          >
+            Mesaj
+          </Button>
 
-        {/* İkinci buton: Arama yapmak için */}
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<PhoneIcon />}
-          href="tel:+905057453874"
-          sx={{ marginLeft: "16px" }} // Butonlar arası boşluk
-        >
-          Ara
-        </Button>
+          {/* İkinci buton: Arama yapmak için */}
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PhoneIcon />}
+            href="tel:+905057453874"
+            sx={{ marginLeft: "16px" }} // Butonlar arası boşluk
+          >
+            Ara
+          </Button>
+        </Box>
       </Box>
     </Card>
   );
