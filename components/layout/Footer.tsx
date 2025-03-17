@@ -3,7 +3,6 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Divider from "@mui/material/Divider";
@@ -13,6 +12,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import EmailIcon from "@mui/icons-material/Email";
 import Image from "next/image"; // Next.js için
+import {Grid2} from '@mui/material'; // Grid2'nin doğru yolu
 
 const StyledFooter = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -29,11 +29,11 @@ const StyledFooter = styled(Box)(({ theme }) => ({
 const Footer = () => {
   return (
     <div>
-    <StyledFooter component="footer">
+    <StyledFooter >
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
+        <Grid2 container spacing={4}>
           {/* Logo Bölümü */}
-          <Grid item xs={12} sm={4}>
+          <Grid2 >
             <Image src='/logo.svg' alt="Car Logo" width={60} height={60} />
             <Typography variant="h6" color="inherit" gutterBottom>
               RentCar
@@ -41,33 +41,32 @@ const Footer = () => {
             <Typography variant="body2" color="inherit">
               İhtiyacınız olan aracı en uygun fiyatlarla kiralayın.
             </Typography>
-          </Grid>
+          </Grid2>
 
           {/* Navigasyon Bölümü */}
-          <Grid item xs={12} sm={4}>
+          <Grid2>
             <Typography variant="h6" color="inherit" gutterBottom>
               Menü
             </Typography>
-            <Link href="#" color="inherit" underline="none" variant="body2">
+            <Link href="#" color="inherit">
               Ana Sayfa
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="none" variant="body2">
+            <Link href="#" color="inherit">
               Hakkımızda
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="none" variant="body2">
+            <Link href="#" color="inherit">
               İletişim
             </Link>
             <br />
             {/* Admin Giriş Linki */}
-            <Link href="/signin" color="inherit" underline="none" variant="body2">
+            <Link href="/signin" color="inherit" >
               Admin Girişi
             </Link>
-          </Grid>
+          </Grid2>
 
-          {/* İletişim ve Sosyal Medya Bölümü */}
-          <Grid item xs={12} sm={4}>
+          <Grid2 >
             <Typography variant="h6" color="inherit" gutterBottom>
               İletişim
             </Typography>
@@ -94,8 +93,8 @@ const Footer = () => {
                 <EmailIcon />
               </IconButton>
             </Box>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
         {/* Alt Bilgi */}
         <Divider sx={{ backgroundColor: "#ffffff", mt: 4 }} />

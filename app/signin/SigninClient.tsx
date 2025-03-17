@@ -10,7 +10,6 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import AppTheme from "../_shared-theme/AppTheme";
 import { useRouter } from "next/navigation";
 import { Snackbar } from "@mui/material";
 import { useState } from "react";
@@ -58,7 +57,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export default function SignIn() {
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
@@ -125,7 +124,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
   return (
     <div>
-      <AppTheme {...props}>
         <CssBaseline enableColorScheme />
         <SignInContainer direction="column" justifyContent="space-between">
           <Card variant="outlined">
@@ -176,7 +174,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             </Box>
           </Card>
         </SignInContainer>
-      </AppTheme>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

@@ -1,3 +1,4 @@
+import { Car } from '@prisma/client';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface CarState {

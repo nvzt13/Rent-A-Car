@@ -5,9 +5,10 @@ import CarCard from "@/components/shared/Card";
 import Skeleton from '@mui/material/Skeleton';
 import { useAppSelector } from '@/lib/hooks';
 import {Grid2} from '@mui/material'; // Grid2'nin doğru yolu
+import { Car } from '@prisma/client';
 
 const PageClient = () => {
-  const cars = useAppSelector((state: { cars: { cars: any[] } }) => state.cars.cars); 
+  const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars); 
   
 
   return (

@@ -1,5 +1,4 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress"; // Import loading icon
 import { GridCellParams, GridColDef } from "@mui/x-data-grid";
@@ -17,26 +16,6 @@ function renderStatus(status: "Online" | "Offline") {
   return <Chip label={status} color={colors[status]} size="small" />;
 }
 
-export function renderAvatar(
-  params: GridCellParams<{ name: string; color: string }, any, any>
-) {
-  if (params.value == null) {
-    return "";
-  }
-
-  return (
-    <Avatar
-      sx={{
-        backgroundColor: params.value.color,
-        width: "24px",
-        height: "24px",
-        fontSize: "0.85rem",
-      }}
-    >
-      {params.value.name.toUpperCase().substring(0, 1)}
-    </Avatar>
-  );
-}
 
 interface Car {
   id: string;
@@ -110,7 +89,7 @@ export function useGridColumns() {
       headerName: "Durum",
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => renderStatus(params.value as any),
+      renderCell: (params) => renderStatus(params.value),
     },
     { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
     { field: "startDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },

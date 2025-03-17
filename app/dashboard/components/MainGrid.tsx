@@ -10,7 +10,7 @@ export default function MainGrid() {
       sx={{
         width: "100%",
         maxWidth: { sm: "100%", md: "1700px" },
-        margin: "0 auto",
+        margin: "50px auto",
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "3fr 1fr" },
         gap: 2,

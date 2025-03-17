@@ -36,7 +36,7 @@ const AddCar = () => {
   const statuses = ["Offline", "Online"];
   const carModel = ["Premium", "Ekonomi", "Suv"];
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "image") {
@@ -54,13 +54,13 @@ const AddCar = () => {
     }
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
     Object.entries(carData).forEach(([key, value]) => {
       formData.append(key, String(value ?? ""));
     });
-    for (let pair of formData.entries()) {
+    for (const pair of formData.entries()) {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
 
@@ -93,156 +93,158 @@ const AddCar = () => {
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        maxWidth: 400,
-        mx: "auto",
-        mt: 4,
-        p: 3,
-        bgcolor: "#f7f7f7",
-        borderRadius: 2,
-        boxShadow: 3,
-      }}
-    >
-      <Typography variant="h5" gutterBottom align="center" color="primary">
-        {carToBeUpdated ? "Update Car" : "Add Car"}
-      </Typography>
-      <TextField
-        label="Car Name"
-        name="name"
-        value={carData.name}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        required
-      />
-      <TextField
-        label="Model"
-        name="carModel"
-        value={carData.carModel}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        required
-      />
-      <TextField
-        label="Fuel Type"
-        name="fuelType"
-        value={carData.fuelType}
-        onChange={handleInputChange}
-        select
-        fullWidth
-        margin="normal"
-        required
+    <div>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          maxWidth: 400,
+          mx: "auto",
+          mt: 4,
+          p: 3,
+          bgcolor: "#f7f7f7",
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
       >
-        {fuelTypes.map((type) => (
-          <MenuItem key={type} value={type}>
-            {type}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        label="Car Type"
-        name="carType"
-        value={carData.carType}
-        onChange={handleInputChange}
-        select
-        fullWidth
-        margin="normal"
-        required
-      >
-        {carModel.map((type) => (
-          <MenuItem key={type} value={type}>
-            {type}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        label="Kilometers"
-        name="km"
-        value={carData?.km}
-        onChange={handleInputChange}
-        type="number"
-        fullWidth
-        margin="normal"
-        required
-      />
-      <TextField
-        label="Price"
-        name="price"
-        value={carData?.price}
-        onChange={handleInputChange}
-        type="number"
-        fullWidth
-        margin="normal"
-        required
-      />
-      <TextField
-        label="Status"
-        name="status"
-        value={carData.status}
-        onChange={handleInputChange}
-        select
-        fullWidth
-        margin="normal"
-        required
-      >
-        {statuses.map((status) => (
-          <MenuItem key={status} value={status}>
-            {status}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        name="startDate"
-        value={carData.startDate}
-        onChange={handleInputChange}
-        type="date"
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        name="endDate"
-        value={carData.endDate}
-        onChange={handleInputChange}
-        type="date"
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="URL"
-        name="image"
-        value={carData.image}
-        onChange={handleInputChange}
-        type="text"
-        fullWidth
-        margin="normal"
-        required
-      />
+        <Typography variant="h5" gutterBottom align="center" color="primary">
+          {carToBeUpdated ? "Update Car" : "Add Car"}
+        </Typography>
+        <TextField
+          label="Car Name"
+          name="name"
+          value={carData.name}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Model"
+          name="carModel"
+          value={carData.carModel}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Fuel Type"
+          name="fuelType"
+          value={carData.fuelType}
+          onChange={handleInputChange}
+          select
+          fullWidth
+          margin="normal"
+          required
+        >
+          {fuelTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+              {type}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          label="Car Type"
+          name="carType"
+          value={carData.carType}
+          onChange={handleInputChange}
+          select
+          fullWidth
+          margin="normal"
+          required
+        >
+          {carModel.map((type) => (
+            <MenuItem key={type} value={type}>
+              {type}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          label="Kilometers"
+          name="km"
+          value={carData?.km}
+          onChange={handleInputChange}
+          type="number"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Price"
+          name="price"
+          value={carData?.price}
+          onChange={handleInputChange}
+          type="number"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Status"
+          name="status"
+          value={carData.status}
+          onChange={handleInputChange}
+          select
+          fullWidth
+          margin="normal"
+          required
+        >
+          {statuses.map((status) => (
+            <MenuItem key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          name="startDate"
+          value={carData.startDate}
+          onChange={handleInputChange}
+          type="date"
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          name="endDate"
+          value={carData.endDate}
+          onChange={handleInputChange}
+          type="date"
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="URL"
+          name="image"
+          value={carData.image}
+          onChange={handleInputChange}
+          type="text"
+          fullWidth
+          margin="normal"
+          required
+        />
 
-      {imagePreview && (
-        <Card sx={{ my: 2 }}>
-          <CardMedia
-            component="img"
-            image={imagePreview}
-            alt="Car Image Preview"
-            sx={{ height: 150 }}
-          />
-        </Card>
-      )}
+        {imagePreview && (
+          <Card sx={{ my: 2 }}>
+            <CardMedia
+              component="img"
+              image={imagePreview}
+              alt="Car Image Preview"
+              sx={{ height: 150 }}
+            />
+          </Card>
+        )}
 
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ py: 1.5 }}
-      >
-        {parseCarToBeUpdated ? "Update Car" : "Add Car"}
-      </Button>
-    </Box>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ py: 1.5 }}
+        >
+          {parseCarToBeUpdated ? "Update Car" : "Add Car"}
+        </Button>
+      </Box>
+    </div>
   );
 };
 

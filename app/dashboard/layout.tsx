@@ -1,7 +1,9 @@
 import React from 'react'
 import SideMenu from './components/SideMenu'
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: Readonly<{
+  children: React.ReactNode;
+}>) => {
   return (
     <div className="flex">
       {/* SideMenu sadece medium (md) ve daha büyük ekranlarda gösterilecek */}
