@@ -22,8 +22,6 @@ interface Car {
   name: string;
   status: "Online" | "Offline";
   price: number;
-  startDate: string;
-  endDate: string;
 }
 
 function GridActions({
@@ -85,15 +83,16 @@ export function useGridColumns() {
   const columns: GridColDef[] = [
     { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
     {
-      field: "status",
-      headerName: "Durum",
+      field: "gear",
+      headerName: "Fites",
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => renderStatus(params.value),
     },
     { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
-    { field: "startDate", headerName: "Alış Tarihi", flex: 1, minWidth: 100 },
-    { field: "endDate", headerName: "Teslim Tarihi", flex: 1, minWidth: 150 },
+    { field: "carModel", headerName: "Model", flex: 1, minWidth: 100 },
+    { field: "carType", headerName: "Sinif", flex: 1, minWidth: 150 },
+    { field: "fuelType", headerName: "Yakit", flex: 1, minWidth: 150 },
+    { field: "km", headerName: "KM", flex: 1, minWidth: 150 },
     {
       field: "actions",
       headerName: "İşlemler",

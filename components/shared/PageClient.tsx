@@ -1,15 +1,24 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation'; // Import Next.js router for navigation
 import CarCard from "@/components/shared/Card";
 import Skeleton from '@mui/material/Skeleton';
 import { useAppSelector } from '@/lib/hooks';
-import {Grid2} from '@mui/material'; // Grid2'nin doğru yolu
+import { Grid2, Button } from '@mui/material'; // Added Button import
 import { Car } from '@prisma/client';
 
 const PageClient = () => {
   const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars); 
-  
+  const router = useRouter(); // Initialize the Next.js router
+
+  const handleSingleCarComponent = (car: Car) => {
+    router.push(`/single-car/${car.id}`);
+  };
+
+  if(cars.length === 0) {
+    return <div>Not Car Found</div>
+  }
 
   return (
     <div style={{ backgroundColor: '#fff', padding: '20px', minHeight: '100vh' }}>
@@ -40,7 +49,9 @@ const PageClient = () => {
                 }
               }}
             >
-              <CarCard car={car} />
+              <Button onClick={() => handleSingleCarComponent(car)}> 
+                <CarCard car={car} />
+              </Button>
             </Grid2>
           )) : (
             Array.from(new Array(8)).map((_, index) => (

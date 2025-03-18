@@ -27,13 +27,11 @@ const AddCar = () => {
     price: parseCarToBeUpdated?.price || "",
     carType: parseCarToBeUpdated?.carType || "",
     image: parseCarToBeUpdated?.image || "",
-    status: parseCarToBeUpdated?.status || "",
-    startDate: parseCarToBeUpdated?.startDate || "",
-    endDate: parseCarToBeUpdated?.endDate || "",
+    gear: parseCarToBeUpdated?.gear || "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fuelTypes = ["Gasoline", "Diesel", "Electric", "Hybrid"];
-  const statuses = ["Offline", "Online"];
+  const gear = ["Manel", "Otomatik"];
   const carModel = ["Premium", "Ekonomi", "Suv"];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,38 +178,22 @@ const AddCar = () => {
           margin="normal"
           required
         />
-        <TextField
-          label="Status"
-          name="status"
-          value={carData.status}
-          onChange={handleInputChange}
-          select
-          fullWidth
-          margin="normal"
-          required
-        >
-          {statuses.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          name="startDate"
-          value={carData.startDate}
-          onChange={handleInputChange}
-          type="date"
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="endDate"
-          value={carData.endDate}
-          onChange={handleInputChange}
-          type="date"
-          fullWidth
-          margin="normal"
-        />
+<TextField
+  label="Fites"
+  name="gear" // Change to "gear" to match state
+  value={carData.gear} // Correctly bind the value
+  onChange={handleInputChange} // Handle input change
+  select
+  fullWidth
+  margin="normal"
+  required
+>
+  {gear.map((item) => (
+    <MenuItem key={item} value={item}>
+      {item}
+    </MenuItem>
+  ))}
+</TextField>
         <TextField
           label="URL"
           name="image"

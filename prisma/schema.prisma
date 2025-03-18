@@ -24,9 +24,22 @@ model Car {
   carType   String
   km        Int
   price     Int
-  status    String? @default("Offline") 
-  startDate DateTime? 
-  endDate   DateTime? 
+  gear      String
   image     String
-  createdAt  DateTime? @default(now())
+  createdAt DateTime? @default(now())
+
+  // Opposite relation field to Rental
+  rentals   Rental[]  // A car can have multiple rentals
+}
+
+model Rental {
+  id            Int      @id @default(autoincrement())
+  rentalDate    DateTime
+  returnDate    DateTime
+  customerName  String
+  phoneNumber   String
+  carId         Int
+
+  // Relation to Car model
+  car           Car      @relation(fields: [carId], references: [id])
 }

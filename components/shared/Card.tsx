@@ -122,7 +122,7 @@ export default function CarCard({ car }: { car: Car }) {
             sx={{ display: "flex", flexDirection: "column" }}
           >
             <SettingsIcon />
-            <Typography variant="caption">Manuel</Typography>
+            <Typography variant="caption">{car.gear}</Typography>
           </IconButton>
         </CardActions>
         <Box

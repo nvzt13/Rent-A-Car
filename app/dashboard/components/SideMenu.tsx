@@ -11,6 +11,8 @@ import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
+  { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link:
+  '/dashboard/add-rental' },
   { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
 ];
 
@@ -19,7 +21,7 @@ export default function MenuContent() {
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       <List dense>
         {mainListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+          <ListItem key={index}   >
             <Link href={item.link} passHref legacyBehavior>
               <ListItemButton component="a" selected={index === 0}>
                 <ListItemIcon>{item.icon}</ListItemIcon>

@@ -63,6 +63,7 @@ export async function POST(
       "km",
       "price",
       "carType",
+      "gear",
       "image",
     ];
 
@@ -90,6 +91,7 @@ export async function POST(
       carType: data.carType || null,
       km: data.km ? Number(data.km) : null,
       price: data.price ? Number(data.price) : null,
+      gear: data.gear || null,
       image: data.image || null,
     };
 
@@ -114,6 +116,7 @@ export async function POST(
         km: carData.km as number,
         price: carData.price as number,
         carType: carData.carType as string,
+        gear: carData.gear as string,
         image: carData.image as string,
       },
     });
@@ -177,6 +180,7 @@ export async function PUT(
       "km",
       "price",
       "carType",
+      "gear",
       "image",
     ];
 
@@ -204,9 +208,8 @@ export async function PUT(
       carType: data.carType as string,
       km: Number(data.km),
       price: Number(data.price),
+      gear: data.gear as string,
       status: data.status as string,
-      startDate: data.startDate as string,
-      endDate: data.endDate as string,
       image: data.image as string,
     };
 
