@@ -1,8 +1,8 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import ChartUserByCountry from "@/app/dashboard/components/ChartUserByCountry";
-import AdminCarTable from "@/app/dashboard/components/AdminCarTable";
+import ChartUserByCountry from "./ChartUserByCountry";
+import AdminCarTable from "./AdminCarTable";
 
 export default function MainGrid() {
   return (

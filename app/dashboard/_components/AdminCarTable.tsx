@@ -2,7 +2,7 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAppSelector } from "@/lib/hooks";
-import { useGridColumns } from "../internals/data/gridData";
+import { useGridColumns } from "./gridData";
 
 export default function AdminCarTable() {
   const cars = useAppSelector((state) => state.cars.cars);

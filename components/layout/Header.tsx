@@ -34,10 +34,11 @@ const Header = () => {
         <Toolbar>
           {/* Drawer component for mobile */}
           <TemporaryDrawer open={open} toggleDrawer={toggleDrawer} />
+          <Link href="/">
+          <Image src='/logo.svg' alt="Car Logo" width={40}
+                        height={40} />
+          </Link>
           
-          {/* Araba logosunu ekledik ve mobilde sağ tarafa yerleştirdik */}
-                        <Image src='/logo.svg' alt="Car Logo" width={40}
-                        height={40} /> {/* Araba logosunu yerleştirdik */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "flex", sm: "none" }, justifyContent: "flex-end" }}>
             <IconButton

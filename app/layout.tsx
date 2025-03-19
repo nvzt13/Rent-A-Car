@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer"
+import Footer from "@/components/layout/Footer";
 import StoreProvider from "./StoreProvider";
-import FillReduxStore from "@/components/shared/FillReduxStore";
+import FillReduxStore from "@/app/_components/FillReduxStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,10 +32,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StoreProvider>
-        <Header />
-        <FillReduxStore />
-        {children}
-              <Footer />
+          <Header />
+          <FillReduxStore />
+          {children}
+          <Footer />
         </StoreProvider>
       </body>
     </html>

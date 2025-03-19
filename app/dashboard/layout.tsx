@@ -1,5 +1,5 @@
 import React from 'react'
-import SideMenu from './components/SideMenu'
+import SideMenu from './_components/SideMenu'
 
 const Layout = ({ children }: Readonly<{
   children: React.ReactNode;

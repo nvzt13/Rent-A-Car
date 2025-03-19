@@ -1,8 +1,27 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '@/lib/hooks'; // Assuming useAppSelector is your hook to access the Redux store
+import { useAppSelector } from '@/lib/hooks';
 import { Car } from '@prisma/client';
+import { Box, Typography, Card, CardContent, CardMedia, Grid, Chip, Divider, List, ListItem, ListItemText } from '@mui/material';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import DriveEtaIcon from '@mui/icons-material/DriveEta';
+import SpeedIcon from '@mui/icons-material/Speed';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CurrencyLiraIcon from '@mui/icons-material/CurrencyLira';
+
+const getChipColor = (model: string) => {
+  switch (model) {
+    case "Ekonomi":
+      return "success";
+    case "SUV":
+      return "primary";
+    case "Premium":
+      return "warning";
+    default:
+      return "default";
+  }
+};
 
 const SingleCarClient = ({ id }: { id: number }) => {
   const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars);
@@ -17,46 +36,101 @@ const SingleCarClient = ({ id }: { id: number }) => {
 
   if (!car) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-xl font-semibold">Car not found</p>
-      </div>
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h5" fontWeight="bold">Car not found</Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <Box maxWidth="lg" mx="auto" py={4} px={2}>
       {/* Car Header Section */}
-      <div className="flex items-center space-x-6 mb-8">
-        <img
-          src={car.image}
-          alt={car.name}
-          className="w-96 h-60 object-cover rounded-lg shadow-lg"
-        />
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{car.name}</h1>
-          <p className="text-lg text-gray-600">Model: {car.carModel}</p>
-        </div>
-      </div>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={5}>
+          <Card sx={{ borderRadius: 4, boxShadow: 4 }}>
+            <CardMedia
+              component="img"
+              height="250"
+              image={car.image}
+              alt={car.name}
+              sx={{ borderRadius: '4px 4px 0 0' }}
+            />
+            <CardContent>
+              <Typography variant="h4" fontWeight="bold" color="text.primary">
+                {car.name}
+              </Typography>
+              <Typography variant="subtitle1" color="text.secondary">
+                Model: {car.carModel}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
 
-      {/* Car Details Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="border rounded-lg p-6 shadow-md bg-white">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Car Specifications</h2>
-          <ul className="space-y-2">
-            <li><strong>Fuel Type:</strong> {car.fuelType}</li>
-            <li><strong>Car Type:</strong> {car.carType}</li>
-            <li><strong>KM:</strong> {car.km.toLocaleString()} km</li>
-            <li><strong>Gear:</strong> {car.gear}</li>
-          </ul>
-        </div>
+        {/* Car Details Section */}
+        <Grid item xs={12} md={7}>
+          <Card sx={{ borderRadius: 4, boxShadow: 4 }}>
+            <CardContent>
+              <Typography variant="h5" fontWeight="bold" color="text.primary" mb={2}>
+                Car Specifications
+              </Typography>
+              <Divider />
+              <List sx={{ mt: 2 }}>
+                <ListItem>
+                  <ListItemText
+                    primary="Fuel Type"
+                    secondary={car.fuelType}
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                  <LocalGasStationIcon sx={{ ml: 2, color: 'text.secondary' }} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Car Type"
+                    secondary={car.carType}
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                  <DriveEtaIcon sx={{ ml: 2, color: 'text.secondary' }} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="KM"
+                    secondary={`${car.km.toLocaleString()} km`}
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                  <SpeedIcon sx={{ ml: 2, color: 'text.secondary' }} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Gear"
+                    secondary={car.gear}
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                  <SettingsIcon sx={{ ml: 2, color: 'text.secondary' }} />
+                </ListItem>
+              </List>
+            </CardContent>
+          </Card>
 
-        <div className="border rounded-lg p-6 shadow-md bg-white">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Pricing & Availability</h2>
-          <p><strong>Price:</strong> ${car.price} / day</p>
-          <p><strong>Available Rentals:</strong> {car.rentals.length}</p>
-        </div>
-      </div>
-    </div>
+          {/* Pricing & Availability Section */}
+          <Card sx={{ borderRadius: 4, boxShadow: 4, mt: 4 }}>
+            <CardContent>
+              <Typography variant="h5" fontWeight="bold" color="text.primary" mb={2}>
+                Pricing & Availability
+              </Typography>
+              <Divider />
+              <Typography variant="h6" color="text.primary" mt={2}>
+                Price: {car.price} <CurrencyLiraIcon fontSize="small" sx={{ verticalAlign: 'middle' }} /> / day
+              </Typography>
+              <Chip
+                label={car.carType}
+                color={getChipColor(car.carType)}
+                sx={{ mt: 2, fontSize: '1rem' }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
