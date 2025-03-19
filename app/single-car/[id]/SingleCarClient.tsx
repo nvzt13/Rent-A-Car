@@ -46,7 +46,6 @@ const SingleCarClient = ({ id }: { id: number }) => {
     <Box maxWidth="lg" mx="auto" py={4} px={2}>
       {/* Car Header Section */}
       <Grid container spacing={4}>
-        <Grid item xs={12} md={5}>
           <Card sx={{ borderRadius: 4, boxShadow: 4 }}>
             <CardMedia
               component="img"
@@ -55,18 +54,9 @@ const SingleCarClient = ({ id }: { id: number }) => {
               alt={car.name}
               sx={{ borderRadius: '4px 4px 0 0' }}
             />
-            <CardContent>
-              <Typography variant="h4" fontWeight="bold" color="text.primary">
-                {car.name}
-              </Typography>
-              <Typography variant="subtitle1" color="text.secondary">
-                Model: {car.carModel}
-              </Typography>
-            </CardContent>
+          
           </Card>
-        </Grid>
 
-        {/* Car Details Section */}
         <Grid item xs={12} md={7}>
           <Card sx={{ borderRadius: 4, boxShadow: 4 }}>
             <CardContent>
@@ -110,8 +100,6 @@ const SingleCarClient = ({ id }: { id: number }) => {
               </List>
             </CardContent>
           </Card>
-
-          {/* Pricing & Availability Section */}
           <Card sx={{ borderRadius: 4, boxShadow: 4, mt: 4 }}>
             <CardContent>
               <Typography variant="h5" fontWeight="bold" color="text.primary" mb={2}>

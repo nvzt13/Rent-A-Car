@@ -129,7 +129,7 @@ export default function CarCard({ car }: { car: Car }) {
               İncele
             </Button>
           </Link>
-          <Link href="/rental-form" passHref>
+          <Link href={`/rental-form/${car.id}`} passHref>
             <Button
               variant="outlined"
               color="success"

@@ -37,6 +37,8 @@ model Rental {
   rentalDate    DateTime
   returnDate    DateTime
   customerName  String
+  takeHour      String
+  deliveryHour      String
   phoneNumber   String
   carId         Int
 

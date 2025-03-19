@@ -2,7 +2,32 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET
+/*
+// api/cars/[carId]/rentals.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '../../../lib/prisma';
 
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { carId } = req.query;
+
+  try {
+    // Belirtilen araba için kiralama kayıtlarını al
+    const rentals = await prisma.rental.findMany({
+      where: {
+        carId: Number(carId),
+      },
+      select: {
+        rentalDate: true,
+        returnDate: true,
+      },
+    });
+
+    res.status(200).json(rentals);
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong.' });
+  }
+}
+*/
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -50,12 +75,14 @@ export async function GET(
 
 // POST
 export async function POST(
-  request: NextRequest,
+  request: NextRequest,   { params }: { params: Promise<{ slug: string }> }
 ) {
-
-  try {
-    const formData = await request.formData();
-
+  const {slug} = await params
+  const [table] = slug
+  const body = await request.json()
+switch(table){
+  case 'car':
+    try {
     const requiredFields = [
       "name",
       "carModel",
@@ -133,6 +160,24 @@ export async function POST(
       { status: 500 }
     );
   }
+  case 'rental':
+    const createRental = await prisma.rental.create({
+      data: {customerName: body.customerName,
+    phoneNumber: body.phoneNumber,
+    takeHour: body.takeHour,
+    deliveryHour: body.deliveryHour,
+    rentalDate: new Date( body.returnDate).toISOString(),
+    returnDate: body.returnDate.toISOString(),
+     carId: {
+          connect: {
+            id: body.carId,
+          },
+        },
+      }
+    })
+    return NextResponse.json({message:"Randevu olusturuldu"}, {status:201})
+}
+  
 }
 
 //  DELETE
