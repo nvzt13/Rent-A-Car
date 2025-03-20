@@ -1,41 +1,60 @@
 import { prisma } from "@/lib/prisma";
+import { Black_And_White_Picture } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
 
+
+// const response = await fetch(`/api/v1/car/id/block-date`)
 // GET
-/*
-// api/cars/[carId]/rentals.ts
-import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { carId } = req.query;
-
-  try {
-    // Belirtilen araba için kiralama kayıtlarını al
-    const rentals = await prisma.rental.findMany({
-      where: {
-        carId: Number(carId),
-      },
-      select: {
-        rentalDate: true,
-        returnDate: true,
-      },
-    });
-
-    res.status(200).json(rentals);
-  } catch (error) {
-    res.status(500).json({ error: 'Something went wrong.' });
-  }
-}
-*/
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const [table, username, password] = slug
+  const [table, id, query] = slug
   switch (table) {
     case "car":
+    
+if (table && id && query) {
+  const blockDays = await prisma.car.findFirst({
+    where: {
+      id: Number(id),
+    },
+    include: {
+      rentals: {
+        select: {
+          rentalDate: true,
+          returnDate: true,
+        },
+      },
+    },
+  });
+
+  if (!blockDays || !blockDays.rentals) {
+    return NextResponse.json({ message: "No rentals found for this car." }, { status: 404 });
+  }
+
+  // Calculate block days
+  const blockDates = blockDays.rentals.map((rental) => {
+    const rentalStart = new Date(rental.rentalDate);
+    const rentalEnd = new Date(rental.returnDate);
+    const blockedDays = [];
+
+    let currentDate = rentalStart;
+    while (currentDate <= rentalEnd) {
+      blockedDays.push(currentDate.toISOString().split('T')[0]); // Save the date in YYYY-MM-DD format
+      currentDate.setDate(currentDate.getDate() + 1); // Increment the day
+    }
+
+    return blockedDays;
+  }).flat(); // Flatten the array of block days
+
+  return NextResponse.json({
+    message: "Dolu günler getirildi!",
+    blockDays: blockDates,
+  }, { status: 200 });
+}
+      
       try {
         const allCars = await prisma.car.findMany();
         return NextResponse.json(
@@ -53,7 +72,7 @@ export async function GET(
     case "admin":
       try {
         const admin = await prisma.admin.findFirst({where:{id:1}})
-        if(admin?.name === username && admin?.password === password){
+        if(admin?.name === id && admin?.password === query){
           return NextResponse.json({ message: "True" }, { status: 200 });
         }
       } catch (error) {
@@ -72,7 +91,6 @@ export async function GET(
   }
 }
 
-
 // POST
 export async function POST(
   request: NextRequest,   { params }: { params: Promise<{ slug: string }> }
@@ -82,6 +100,7 @@ export async function POST(
   const body = await request.json()
 switch(table){
   case 'car':
+    const formData = await request.formData()
     try {
     const requiredFields = [
       "name",
@@ -162,19 +181,16 @@ switch(table){
   }
   case 'rental':
     const createRental = await prisma.rental.create({
-      data: {customerName: body.customerName,
-    phoneNumber: body.phoneNumber,
-    takeHour: body.takeHour,
-    deliveryHour: body.deliveryHour,
-    rentalDate: new Date( body.returnDate).toISOString(),
-    returnDate: body.returnDate.toISOString(),
-     carId: {
-          connect: {
-            id: body.carId,
-          },
-        },
-      }
-    })
+      data: {
+        customerName: body.customerName,
+        phoneNumber: body.phoneNumber,
+        takeHour: body.takeHour || null,
+        deliveryHour: body.deliveryHour,
+        rentalDate: new Date(body.rentalDate).toISOString(),
+        returnDate: new Date(body.returnDate).toISOString(),
+        carId: Number( body.carId), // Car tablosundaki ID ile eşleşecek
+      },
+    });
     return NextResponse.json({message:"Randevu olusturuldu"}, {status:201})
 }
   
