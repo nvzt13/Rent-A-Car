@@ -1,7 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import ChartUserByCountry from "./ChartUserByCountry";
 import AdminCarTable from "./AdminCarTable";
 
 export default function MainGrid() {
@@ -26,7 +25,6 @@ export default function MainGrid() {
           spacing={2}
           sx={{ height: "100%", justifyContent: "flex-start" }}
         >
-          <ChartUserByCountry />
         </Stack>
       </Box>
     </Box>

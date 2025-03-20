@@ -9,15 +9,12 @@ import { Grid2, Button } from "@mui/material"; // Added Button import
 import { Car } from "@prisma/client";
 
 const PageClient = () => {
-  const cars = useAppSelector(
-    (state: { cars: { cars: Car[] } }) => state.cars.cars
-  );
-  const router = useRouter(); // Initialize the Next.js router
-
-  if (cars.length === 0) {
-    return <div>Not Car Found</div>;
-  }
-
+  const { cars, loading } = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => ({
+  cars: state.cars.cars,
+  loading: state.cars.loading
+}));
+  
+  const router = useRouter();
   return (
     <div
       style={{ backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}
@@ -30,29 +27,8 @@ const PageClient = () => {
           alignItems: "flex-start",
         }}
       >
-        {cars && cars.length > 0
-          ? cars.map((car) => (
-              <Grid2
-                key={car.id}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
-                  "@media (min-width: 600px)": {
-                    width: "50%",
-                  },
-                  "@media (min-width: 900px)": {
-                    width: "33.33%",
-                  },
-                  "@media (min-width: 1200px)": {
-                    width: "25%",
-                  },
-                }}
-              >
-                <CarCard car={car} />
-              </Grid2>
-            ))
-          : Array.from(new Array(8)).map((_, index) => (
+        {loading
+          ? Array.from(new Array(8)).map((_, index) => (
               <Grid2
                 key={index}
                 sx={{
@@ -81,7 +57,28 @@ const PageClient = () => {
                   <Skeleton width="80%" sx={{ bgcolor: "grey.800" }} />
                 </div>
               </Grid2>
-            ))}
+            )): cars.map((car) => (
+              <Grid2
+                key={car.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                  "@media (min-width: 600px)": {
+                    width: "50%",
+                  },
+                  "@media (min-width: 900px)": {
+                    width: "33.33%",
+                  },
+                  "@media (min-width: 1200px)": {
+                    width: "25%",
+                  },
+                }}
+              >
+                <CarCard car={car} />
+              </Grid2>
+            ))
+        }
       </Grid2>
     </div>
   );

@@ -1,3 +1,4 @@
+"use client"
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -11,20 +12,40 @@ import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
-  { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link:
-  '/dashboard/add-rental' },
+  { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-rental' },
   { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
 ];
 
 export default function MenuContent() {
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const handleListItemClick = (index) => {
+    setSelectedIndex(index);
+  };
+
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       <List dense>
         {mainListItems.map((item, index) => (
-          <ListItem key={index}   >
+          <ListItem key={index}>
             <Link href={item.link} passHref legacyBehavior>
-              <ListItemButton component="a" selected={index === 0}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemButton
+                component="a"
+                selected={selectedIndex === index}
+                onClick={() => handleListItemClick(index)}
+                sx={{
+                  bgcolor: selectedIndex === index ? 'primary.main' : 'transparent',
+                  color: selectedIndex === index ? 'black' : 'inherit',
+                  '&:hover': {
+                    bgcolor: 'primary.light',
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{ color: selectedIndex === index ? 'white' : 'inherit' }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </Link>

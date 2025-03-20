@@ -82,7 +82,13 @@ if (table && id && query) {
           { status: 500 }
         );
       }
-
+    case "rental":
+      try{
+        const allRentals = await prisma.rental.findMany()
+        return NextResponse.json({message:"Randevular", allRentals})
+      } catch(error){
+        console.log(error)
+      }
     default:
       return NextResponse.json(
         { message: "Invalid slug" },

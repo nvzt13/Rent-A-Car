@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <StoreProvider>
           <Header />
-          <FillReduxStore />
+          <FillReduxStore/>
           {children}
           <Footer />
         </StoreProvider>
