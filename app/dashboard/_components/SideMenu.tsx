@@ -12,7 +12,7 @@ import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
-  { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-rental' },
+  { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/rental' },
   { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
 ];
 
