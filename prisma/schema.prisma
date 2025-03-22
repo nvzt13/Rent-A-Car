@@ -39,7 +39,7 @@ model Rental {
   customerName  String
   takeHour      String
   deliveryHour      String
-  status        String @default("pending")
+  isAprove        Boolean @default(false)
   phoneNumber   String
   carId         Int
 

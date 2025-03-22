@@ -210,6 +210,8 @@ switch(table){
       },
     });
     return NextResponse.json({message:"Randevu olusturuldu"}, {status:201})
+    default: 
+    console.log("Error")
 }
   
 }
@@ -226,7 +228,9 @@ export async function DELETE(
     return NextResponse.json({ message: "Bad request!" }, { status: 400 });
   }
 
-  try {
+switch(table){
+  case "car":
+    try {
     const deletedCar = await prisma.car.delete({
       where: { id: parseInt(id) }, // Fixed: Properly format where clause with id
     });
@@ -238,6 +242,24 @@ export async function DELETE(
       { status: 500 }
     );
   }
+   break;
+   case "rental":
+     try {
+    const deleteRental = await prisma.rental.delete({
+      where: { id: parseInt(id) },
+    });
+    return NextResponse.json({ message: "Rental deleted!", data: deleteRental });
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json(
+      { message: "Error deleting rental" },
+      { status: 500 }
+    );
+  }
+  break;
+  default: 
+  console.log("Error")
+ }
 }
 
 // PUT
@@ -247,77 +269,101 @@ export async function PUT(
 ) {
   const { slug } = await params;
   const [table, id] = slug;
-  console.log(table)
-  const formData = await request.formData();
-  console.log(formData);
+
+  // Check for missing table or ID
+  if (!table || !id) {
+    return NextResponse.json({ message: "Missing required fields!" }, { status: 400 });
+  }
 
   try {
-    const requiredFields = [
-      "name",
-      "carModel",
-      "fuelType",
-      "km",
-      "price",
-      "carType",
-      "gear",
-      "image",
-    ];
-
-    const missingFields = requiredFields.filter(
-      (field) => !formData.get(field)
-    );
-    console.log("Missing fields:", missingFields);
-
-    if (missingFields.length > 0) {
-      return NextResponse.json(
-        { message: `Bad request! Missing fields: ${missingFields.join(", ")}` },
-        { status: 400 }
-      );
-    }
-
-    // Convert formData to an object
+    const formData = await request.formData();
     const data = Object.fromEntries(formData.entries());
-    console.log("Data object:", data);
 
-    // Make sure the values are properly formatted for Prisma
-    const carData = {
-      name: data.name as string,
-      carModel: data.carModel as string,
-      fuelType: data.fuelType as string,
-      carType: data.carType as string,
-      km: Number(data.km),
-      price: Number(data.price),
-      gear: data.gear as string,
-      status: data.status as string,
-      image: data.image as string,
-    };
+    switch (table) {
+      case "car":
+        const requiredFields = [
+          "name",
+          "carModel",
+          "fuelType",
+          "km",
+          "price",
+          "carType",
+          "gear",
+          "image",
+        ];
 
-    // Check if any required data is null
-    if (Object.values(carData).some((value) => value === null)) {
-      console.log("Invalid data:", carData);
-      return NextResponse.json(
-        {
-          message:
-            "Invalid data. Some fields are null or not in correct format.",
-        },
-        { status: 400 }
-      );
+        // Check for missing fields
+        const missingFields = requiredFields.filter(field => !formData.get(field));
+        if (missingFields.length > 0) {
+          return NextResponse.json(
+            { message: `Bad request! Missing fields: ${missingFields.join(", ")}` },
+            { status: 400 }
+          );
+        }
+
+        // Prepare car data for update
+        const carData = {
+          name: data.name as string,
+          carModel: data.carModel as string,
+          fuelType: data.fuelType as string,
+          carType: data.carType as string,
+          km: Number(data.km),
+          price: Number(data.price),
+          gear: data.gear as string,
+          status: data.status as string,
+          image: data.image as string,
+        };
+
+        // Check if any data is null or invalid
+        if (Object.values(carData).some(value => value === null || value === undefined)) {
+          return NextResponse.json(
+            { message: "Invalid data. Some fields are null or not in correct format." },
+            { status: 400 }
+          );
+        }
+
+        const updateCar = await prisma.car.update({
+          where: { id: parseInt(id) },
+          data: carData,
+        });
+
+        return NextResponse.json(
+          { message: "Car updated successfully!", data: updateCar },
+          { status: 200 }
+        );
+
+      case "rental":
+        // Assuming you're toggling `isApprove` here
+        const rental = await prisma.rental.findUnique({
+          where: { id: parseInt(id) }
+        });
+
+        if (!rental) {
+          return NextResponse.json({ message: "Rental not found!" }, { status: 404 });
+        }
+
+        const updateRental = await prisma.rental.update({
+          where: { id: parseInt(id) },
+          data: {
+            isApprove: !rental.isApprove, // Toggle isApprove value
+          },
+        });
+
+        return NextResponse.json(
+          { message: "Rental updated successfully!", data: updateRental },
+          { status: 200 }
+        );
+
+      default:
+        return NextResponse.json(
+          { message: `Table ${table} not recognized!` },
+          { status: 400 }
+        );
     }
-    const updateCar = await prisma.car.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: carData,
-    });
-    return NextResponse.json(
-      { message: "Car updated successfully!", data: updateCar },
-      { status: 200 }
-    );
   } catch (error) {
-    console.log(error
-    )
+    console.error("Error updating data:", error);
     return NextResponse.json(
-      { message: "Error updating car" },
+      { message: "An error occurred during the update." },
       { status: 500 }
     );
   }
