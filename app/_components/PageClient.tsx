@@ -9,12 +9,10 @@ import { Grid2, Button } from "@mui/material"; // Added Button import
 import { Car } from "@prisma/client";
 
 const PageClient = () => {
-  const { cars, loading } = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => ({
-  cars: state.cars.cars,
-  loading: state.cars.loading
-}));
+  const cars = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.cars);
+  const loading = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.loading);
   
-  const router = useRouter();
+  
   return (
     <div
       style={{ backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}

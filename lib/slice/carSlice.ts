@@ -2,6 +2,7 @@ import { Car } from '@prisma/client';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface CarState {
+  length: number;
   cars: Car[];
   loading: boolean;
 }
@@ -54,30 +55,3 @@ const carSlice = createSlice({
 
 export const { setCars } = carSlice.actions;
 export default carSlice.reducer;
-/*
-export const getAllProducts = createAsyncThunk("getAllProducts", async () => {
-        const response = await axios.get(`${BASE_URL}/products`);
-        return response.data;
-})
-
-
-const productSlice = createSlice({
-        name: "product",
-        initialState,
-        reducers:{  
-                setSelectedProduct: (state, action) => {
-                        state.selectedProduct = action.payload
-                        }
-        },
-        extraReducers: (builder) => {
-                builder.addCase(getAllProducts.pending, (state) => {
-                        state.loading = true;
-                })
-                builder.addCase(getAllProducts.fulfilled, (state, action) => {
-                        state.products = action.payload
-                        state.loading = false;
-
-                })
-        }
-})
-*/

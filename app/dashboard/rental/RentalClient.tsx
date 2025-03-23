@@ -1,85 +1,94 @@
-"use client";
-import React, { useState } from "react";
-import { useAppSelector } from "@/lib/hooks";
+"use client"
+import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { Rental } from "@prisma/client";
-import { 
-  AiOutlineCheckCircle, 
-  AiOutlineDelete, 
-  AiOutlinePlusCircle
-} from "react-icons/ai";
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
-  Paper, Dialog, DialogActions, DialogContent, DialogTitle, 
-  Button, IconButton, CircularProgress, TextField 
+import {
+  CircularProgress,
+  IconButton,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Box,
+  Stack,
+  Tooltip,
 } from "@mui/material";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineDelete,
+  AiOutlineLoading3Quarters,
+  AiOutlineArrowLeft,
+} from "react-icons/ai";
+import { updateRental } from "@/lib/slice/rentalSlice"; // Redux slice'a göre bir update fonksiyonu olmalı
 
 const RentalClient = () => {
-  const { rentals, loadingRental } = useAppSelector((state: { rentals: { rentals: Rental[], loadingRental: boolean } }) => ({
-    rentals: state.rentals.rentals,
-    loadingRental: state.rentals.loadingRental
-  }));
-console.log(rentals)
-  const handleApprove = (id: number) => {
-    console.log(`Randevu onaylandı: ${id}`);
+  const [loadingAprove, setLoadingAprove] = useState<{ [key: number]: boolean }>({});
+  const rentals = useAppSelector((state: { rentals: { rentals: Rental[] } }) => state.rentals.rentals);
+  const dispatch = useAppDispatch();
+
+  const handleApprove = async (id: number) => {
+    console.log(`Randevu onaylanıyor: ${id}`);
+    try {
+      setLoadingAprove((prev) => ({ ...prev, [id]: true }));
+      const res = await fetch(`/api/v1/rental/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "approved" }),
+      });
+      if (res.ok) {
+        
+        const updatedRental = await res.json(); 
+        console.log(updatedRental);
+        dispatch(updateRental(updatedRental.data));
+        console.log(`Randevu onaylandı: ${id}`);
+      } else {
+        console.log(`Randevu onaylanamadı: ${id}`);
+      }
+      setLoadingAprove((prev) => ({ ...prev, [id]: false }));
+    } catch (error) {
+      console.log(error);
+      setLoadingAprove((prev) => ({ ...prev, [id]: false }));
+    }
   };
 
-  const handleDelete = (id: number) => {
-    console.log(`Randevu silindi: ${id}`);
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`/api/v1/rental/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        console.log(`Randevu silindi: ${id}`);
+      } else {
+        console.log(`Randevu silinemedi: ${id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  const [open, setOpen] = useState(false);
-  const [newRental, setNewRental] = useState({
-    customerName: '',
-    rentalDate: '',
-    takeHour: '',
-    deliveryHour: '',
-    status: ''
-  });
-
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleChange = (e) => {
-    setNewRental({ ...newRental, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = () => {
-    console.log("Yeni Randevu Eklendi:", newRental);
-    handleClose();
-  };
-
-  if (loadingRental) {
-    return (
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
 
   return (
-    <div className="container mx-auto mt-5">
-      <h1 className="text-2xl font-bold mb-4">Randevular</h1>
-
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={handleClickOpen} 
-        startIcon={<AiOutlinePlusCircle />}
-      >
-        Yeni Randevu Ekle
-      </Button>
-
-      <TableContainer component={Paper} className="mt-4">
+    <Box sx={{ width: "100%", padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Randevular
+      </Typography>
+      <TableContainer component={Paper} sx={{ marginTop: 2, boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Müşteri Adı</TableCell>
-              <TableCell>Alış</TableCell>
-              <TableCell>Teslim</TableCell>
-              <TableCell>Alış Saati</TableCell>
-              <TableCell>Teslim Saati</TableCell>
-              <TableCell>Durum</TableCell>
-              <TableCell>İşlemler</TableCell>
+              <TableCell><Typography fontWeight="bold">Müşteri Adı</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Alış</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Teslim</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Alış Saati</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Teslim Saati</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Durum</Typography></TableCell>
+              <TableCell align="center"><Typography fontWeight="bold">İşlemler</Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -90,83 +99,39 @@ console.log(rentals)
                 <TableCell>{new Date(rental.returnDate).toLocaleDateString()}</TableCell>
                 <TableCell>{rental.takeHour}</TableCell>
                 <TableCell>{rental.deliveryHour}</TableCell>
-                <TableCell>{rental.status}</TableCell>
-                <TableCell>
-                  <IconButton color="success" onClick={() => handleApprove(rental.id)}>
-                    <AiOutlineCheckCircle />
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(rental.id)}>
-                    <AiOutlineDelete />
-                  </IconButton>
+                <TableCell>{rental.isAprove ? "Onaylandı" : "Beklemede"}</TableCell>
+                <TableCell align="center">
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <Tooltip title={rental.isAprove ? "Onay Geri Al" : "Onayla"}>
+                      <span>
+                        <IconButton
+                          color="success"
+                          onClick={() => handleApprove(rental.id)}
+                          disabled={loadingAprove[rental.id]}
+                        >
+                          {loadingAprove[rental.id] ? (
+                            <AiOutlineLoading3Quarters className="animate-spin" />
+                          ) : rental.isAprove ? (
+                            <AiOutlineArrowLeft />
+                          ) : (
+                            <AiOutlineCheckCircle />
+                          )}
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Sil">
+                      <IconButton color="error" onClick={() => handleDelete(rental.id)}>
+                        <AiOutlineDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Dialog for adding new rental */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Yeni Randevu Ekle</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="customerName"
-            label="Müşteri Adı"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newRental.customerName}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="rentalDate"
-            label="Tarih"
-            type="date"
-            fullWidth
-            variant="outlined"
-            value={newRental.rentalDate}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="takeHour"
-            label="Alış Saati"
-            type="time"
-            fullWidth
-            variant="outlined"
-            value={newRental.takeHour}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="deliveryHour"
-            label="Teslim Saati"
-            type="time"
-            fullWidth
-            variant="outlined"
-            value={newRental.deliveryHour}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="status"
-            label="Durum"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newRental.status}
-            onChange={handleChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">İptal</Button>
-          <Button onClick={handleSubmit} color="primary">Ekle</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    </Box>
   );
 };
 

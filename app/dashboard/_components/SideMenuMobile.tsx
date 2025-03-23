@@ -8,13 +8,27 @@ import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuButton from './MenuButton';
-import MenuContent from './MenuContent';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import Link from 'next/link';
+
 interface SideMenuMobileProps {
   open: boolean | undefined;
   toggleDrawer: (newOpen: boolean) => () => void;
 }
 
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+  const mainListItems = [
+    { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
+    { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/rental' },
+    { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
+  ];
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+  
+    const handleListItemClick = (index) => {
+      setSelectedIndex(index);
+    };
   return (
     <Drawer
       anchor="right"
@@ -55,8 +69,32 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
           <Divider />
+          {mainListItems.map((item, index) => (
+          <ListItem key={index}>
+            <Link href={item.link} passHref legacyBehavior>
+              <ListItemButton
+                component="a"
+                selected={selectedIndex === index}
+                onClick={() => handleListItemClick(index)}
+                sx={{
+                  bgcolor: selectedIndex === index ? 'primary.main' : 'transparent',
+                  color: selectedIndex === index ? 'black' : 'inherit',
+                  '&:hover': {
+                    bgcolor: 'primary.light',
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{ color: selectedIndex === index ? 'white' : 'inherit' }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        ))}
         </Stack>
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>

@@ -5,7 +5,7 @@ export interface CreateCar {
   carType:   string;
   km:        number | string;
   price:     number | string;
-  status?:   string;
+  gear?:   string;
   startDate?: Date;  
   endDate?:   Date;  
   image:     string;
