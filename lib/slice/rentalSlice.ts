@@ -30,25 +30,48 @@ export const fetchRentals = createAsyncThunk('rentals/fetchRentals', async () =>
 // Rental Update Async Thunk
 export const updateRental = createAsyncThunk(
   'rentals/updateRental',
-  async ({ id, status }: { id: number, status: string }, { dispatch, getState }) => {
+  async ( id : number, { dispatch }) => {
     try {
       const response = await fetch(`/api/v1/rental/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status }),
       });
 
       if (response.ok) {
         const updatedRental = await response.json();
-
-        // Fetch updated rentals from the server
         dispatch(fetchRentals());
-
         return updatedRental;
       } else {
         alert('Randevu güncellenemedi');
+        return null;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+);
+
+// Rental Delete Async Thunk
+export const deleteRental = createAsyncThunk(
+  'rentals/deleteRental',
+  async (id: number, { dispatch }) => {
+    try {
+      const response = await fetch(`/api/v1/rental/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Silinen rental sonrasında güncel rental listesini çekelim
+        dispatch(fetchRentals());
+        return id; // Silinen rental'ın id'sini döndürelim
+      } else {
+        alert('Randevu silinemedi');
         return null;
       }
     } catch (error) {
@@ -96,6 +119,20 @@ const rentalSlice = createSlice({
       .addCase(updateRental.rejected, (state) => {
         state.loadingRental = false;
         alert('Failed to update rental');
+      })
+      // Delete Rental
+      .addCase(deleteRental.pending, (state) => {
+        state.loadingRental = true;
+      })
+      .addCase(deleteRental.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.rentals = state.rentals.filter((rental) => rental.id !== action.payload);
+        }
+        state.loadingRental = false;
+      })
+      .addCase(deleteRental.rejected, (state) => {
+        state.loadingRental = false;
+        alert('Failed to delete rental');
       });
   },
 });

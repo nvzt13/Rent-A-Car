@@ -24,55 +24,12 @@ import {
   AiOutlineLoading3Quarters,
   AiOutlineArrowLeft,
 } from "react-icons/ai";
-import { updateRental } from "@/lib/slice/rentalSlice"; // Redux slice'a göre bir update fonksiyonu olmalı
+import { deleteRental, updateRental } from "@/lib/slice/rentalSlice"; // Redux slice'a göre bir update fonksiyonu olmalı
 
 const RentalClient = () => {
   const [loadingAprove, setLoadingAprove] = useState<{ [key: number]: boolean }>({});
   const rentals = useAppSelector((state: { rentals: { rentals: Rental[] } }) => state.rentals.rentals);
   const dispatch = useAppDispatch();
-
-  const handleApprove = async (id: number) => {
-    console.log(`Randevu onaylanıyor: ${id}`);
-    try {
-      setLoadingAprove((prev) => ({ ...prev, [id]: true }));
-      const res = await fetch(`/api/v1/rental/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: "approved" }),
-      });
-      if (res.ok) {
-        
-        const updatedRental = await res.json(); 
-        console.log(updatedRental);
-        dispatch(updateRental(updatedRental.data));
-        console.log(`Randevu onaylandı: ${id}`);
-      } else {
-        console.log(`Randevu onaylanamadı: ${id}`);
-      }
-      setLoadingAprove((prev) => ({ ...prev, [id]: false }));
-    } catch (error) {
-      console.log(error);
-      setLoadingAprove((prev) => ({ ...prev, [id]: false }));
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      const res = await fetch(`/api/v1/rental/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        console.log(`Randevu silindi: ${id}`);
-      } else {
-        console.log(`Randevu silinemedi: ${id}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <Box sx={{ width: "100%", padding: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -106,7 +63,7 @@ const RentalClient = () => {
                       <span>
                         <IconButton
                           color="success"
-                          onClick={() => handleApprove(rental.id)}
+                          onClick={() => dispatch(updateRental(rental.id))}
                           disabled={loadingAprove[rental.id]}
                         >
                           {loadingAprove[rental.id] ? (
@@ -120,7 +77,7 @@ const RentalClient = () => {
                       </span>
                     </Tooltip>
                     <Tooltip title="Sil">
-                      <IconButton color="error" onClick={() => handleDelete(rental.id)}>
+                      <IconButton color="error" onClick={() => dispatch(deleteRental(rental.id))}>
                         <AiOutlineDelete />
                       </IconButton>
                     </Tooltip>

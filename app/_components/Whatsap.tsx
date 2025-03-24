@@ -6,7 +6,7 @@ import { IconButton, Box } from '@mui/material';
 const FloatingWhatsAppButton = () => {
   const handleWhatsAppClick = () => {
     // Open WhatsApp with a pre-filled message
-    window.open('https://wa.me/1234567890?text=Hello! I am interested in renting a car.', '_blank');
+    open('https://wa.me/1234567890?text=Hello! I am interested in renting a car.', '_blank');
   };
 
   return (

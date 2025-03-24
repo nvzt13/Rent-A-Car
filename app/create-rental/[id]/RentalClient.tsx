@@ -89,6 +89,15 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       });
       if (response.ok) {
         alert('Randevu oluşturuldu');
+        setFormData({
+          customerName: '',
+          phoneNumber: '',
+          takeHour: '',
+          deliveryHour: '',
+          rentalDate: '',
+          returnDate: '',
+          carId: id,
+        })
       } else {
         alert('Randevu oluşturulamadı');
       }
@@ -158,9 +167,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
         value={formData.takeHour}
         onChange={handleChange}
         required
-        InputLabelProps={{
-          shrink: true,
-        }}
       />
 
       <TextField
@@ -170,9 +176,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
         value={formData.deliveryHour}
         onChange={handleChange}
         required
-        InputLabelProps={{
-          shrink: true,
-        }}
       />
 
       <DatePicker

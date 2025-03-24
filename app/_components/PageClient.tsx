@@ -12,17 +12,23 @@ const PageClient = () => {
   const cars = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.cars);
   const loading = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.loading);
   
-  
   return (
-    <div
-      style={{ backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}
-    >
+    <div style={{ backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}>
       <Grid2
         container
-        spacing={1}
+        spacing={3}
         sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr", // Mobilde tek sütun
+            sm: "repeat(2, 1fr)", // Küçük ekranlarda 2 sütun
+            md: "repeat(3, 1fr)", // Orta boy ekranlarda 3 sütun
+          },
           justifyContent: "center",
           alignItems: "flex-start",
+          maxWidth: "1400px",
+          mx: "auto",
+          gap: "30px",
         }}
       >
         {loading
@@ -33,15 +39,6 @@ const PageClient = () => {
                   display: "flex",
                   justifyContent: "center",
                   width: "100%",
-                  "@media (min-width: 600px)": {
-                    width: "50%",
-                  },
-                  "@media (min-width: 900px)": {
-                    width: "33.33%",
-                  },
-                  "@media (min-width: 1200px)": {
-                    width: "25%",
-                  },
                 }}
               >
                 <div style={{ width: "90%" }}>
@@ -55,28 +52,19 @@ const PageClient = () => {
                   <Skeleton width="80%" sx={{ bgcolor: "grey.800" }} />
                 </div>
               </Grid2>
-            )): cars.map((car) => (
+            ))
+          : cars.map((car) => (
               <Grid2
                 key={car.id}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   width: "100%",
-                  "@media (min-width: 600px)": {
-                    width: "50%",
-                  },
-                  "@media (min-width: 900px)": {
-                    width: "33.33%",
-                  },
-                  "@media (min-width: 1200px)": {
-                    width: "25%",
-                  },
                 }}
               >
                 <CarCard car={car} />
               </Grid2>
-            ))
-        }
+            ))}
       </Grid2>
     </div>
   );

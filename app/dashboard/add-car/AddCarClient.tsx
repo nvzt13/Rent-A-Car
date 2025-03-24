@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { CreateCar } from "@/type/types";
 import { useSearchParams } from "next/navigation";
+import { useAppDispatch } from "@/lib/hooks";
+import { addCar, updateCar } from "@/lib/slice/carSlice";
 
 const AddCar = () => {
   const searchParams = useSearchParams();
@@ -18,7 +20,7 @@ const AddCar = () => {
   const parseCarToBeUpdated = carToBeUpdated
     ? JSON.parse(decodeURIComponent(carToBeUpdated))
     : null;
-
+  const dispatch = useAppDispatch();
   const [carData, setCarData] = useState<CreateCar>({
     name: parseCarToBeUpdated?.name || "",
     carModel: parseCarToBeUpdated?.carModel || "",
@@ -62,31 +64,14 @@ const AddCar = () => {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
 
-    const method = parseCarToBeUpdated ? "PUT" : "POST";
-    try {
-      const response = await fetch(
-        `/api/v1/car/${parseCarToBeUpdated ? parseCarToBeUpdated.id : ""}`,
-        {
-          method: method,
-          body: formData,
-        }
-      );
-
-      if (response.ok) {
-        alert(
-          parseCarToBeUpdated
-            ? "Update car successfuly"
-            : "Car added successfully"
-        );
-        console.log(response);
-      } else {
-        alert("Failed to add car");
-        console.log(response);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error adding car");
-      console.log(error);
+    if (parseCarToBeUpdated) {
+      const formData = new FormData();
+      Object.entries(carData).forEach(([key, value]) => {
+        formData.append(key, String(value ?? ""));
+      });
+      dispatch(updateCar({ carId: parseCarToBeUpdated.id, carData: formData }));
+    } else{
+      dispatch(addCar(formData))
     }
   };
 
