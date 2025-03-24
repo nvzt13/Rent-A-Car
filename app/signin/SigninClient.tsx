@@ -70,7 +70,6 @@ export default function SignIn() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); 
 
-    // Validate inputs
     const isValid = validateInputs();
     if (!isValid) return;
 
@@ -80,7 +79,13 @@ export default function SignIn() {
     const password = data.get("password");
 
     try {
-      const response = await fetch(`/api/v1/admin/${username}/${password}`);
+      const response = await fetch(`/api/v1/admin`, {
+        method:"POST",
+        headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+      });
       if (response.ok) {
         router.push("/dashboard");
       } else {
@@ -110,7 +115,7 @@ export default function SignIn() {
       setUsernameErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 4) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;

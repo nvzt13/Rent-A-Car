@@ -10,12 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Admin {
-  id       Int    @id @default(autoincrement())
-  name     String
-  password String
-}
-
 model Car {
   id        Int      @id @default(autoincrement())
   name      String
@@ -45,4 +39,10 @@ model Rental {
 
   // Relation to Car model
   car           Car      @relation(fields: [carId], references: [id])
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String
+  password String
 }

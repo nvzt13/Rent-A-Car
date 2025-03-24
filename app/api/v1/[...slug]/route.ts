@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { Black_And_White_Picture } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from 'bcryptjs';
 
-// const response = await fetch(`/api/v1/car/id/block-date`)
 // GET
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -71,20 +70,6 @@ export async function GET(
         console.log("Error fetching cars:", error);
         return NextResponse.json(
           { message: "Failed to fetch cars", error: error },
-          { status: 500 }
-        );
-      }
-
-    case "admin":
-      try {
-        const admin = await prisma.admin.findFirst({ where: { id: 1 } });
-        if (admin?.name === id && admin?.password === query) {
-          return NextResponse.json({ message: "True" }, { status: 200 });
-        }
-      } catch (error) {
-        console.log("Error in admin case:", error);
-        return NextResponse.json(
-          { message: "Failed in admin case", error: error },
           { status: 500 }
         );
       }
@@ -213,7 +198,7 @@ export async function POST(
           { status: 500 }
         );
       }
-
+      break;
     case "rental":
       try {
         if (!contentType.includes("application/json")) {
@@ -246,7 +231,32 @@ export async function POST(
           { status: 500 }
         );
       }
+    break;
+    case "admin":
+      try {
+        const body = await request.json()
+        const  { username, password} = body
+        console.log(username, password)
+        const admin = await prisma.admin.findFirst({ where: { name: username} });
 
+    if (!admin) {
+      return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+    }
+    // Şifre kontrolü
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+      return NextResponse.json({ message: 'Invalid credentials' }, { status: 403 });
+    } 
+     if(admin && isPasswordValid){
+       return NextResponse.json({message:"Admin is ttuth!"}, {status:201})
+     }
+      } catch (error) {
+        console.log("Error in admin case:", error);
+        return NextResponse.json(
+          { message: "Failed in admin case", error: error },
+          { status: 500 }
+        );
+      }
     default:
       return NextResponse.json(
         { message: "Invalid table specified" },
