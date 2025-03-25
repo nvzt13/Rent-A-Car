@@ -30,7 +30,13 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
   useEffect(() => {
     const fetchBlockDate = async () => {
       try {
-        const response = await fetch(`/api/v1/car/${formData.carId}/block-date`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/v1/car/${formData.carId}/block-date`,{
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setBlockDays(data.blockDays);
@@ -80,11 +86,13 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
     };
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('/api/v1/rental', {
         method: 'POST',
         body: JSON.stringify(formDataToSubmit),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       });
       if (response.ok) {

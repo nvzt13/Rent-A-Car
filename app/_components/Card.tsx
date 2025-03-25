@@ -58,9 +58,11 @@ export default function CarCard({ car }: { car: Car }) {
     <CardMedia
       component="img"
       sx={{
-        height: "150px", // Daha sabit bir boyut
+        height: "100%", // Daha sabit bir boyut
         objectFit: "cover", // Görseli sabitlemek için
         objectPosition: "center",
+        pt:5,
+
       }}
       image={car.image}
       title={car.name}

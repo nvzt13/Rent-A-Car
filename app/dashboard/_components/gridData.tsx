@@ -59,8 +59,14 @@ export function useGridActions() {
   const handleDelete = async (id: string) => {
     setLoadingRowId(id); // Set the loading row ID
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`/api/v1/car/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        },
+
       });
       if (response.ok) {
         alert("Car deleted successfully");

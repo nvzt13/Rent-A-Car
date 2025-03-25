@@ -79,16 +79,26 @@ export default function SignIn() {
     const password = data.get("password");
 
     try {
+      const token = localStorage.getItem("token"); 
+      console.log(token)
       const response = await fetch(`/api/v1/admin`, {
         method:"POST",
         headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${token}` 
       },
       body: JSON.stringify({ username, password })
       });
       if (response.ok) {
-        router.push("/dashboard");
-      } else {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+      // localStorage.clear()
+      
+        // Daha sonra, token'i manuel olarak ekleyip sayfaya yönlendirme yapabilirsin
+        const token = localStorage.getItem('token');
+        router.push(`/dashboard?token=${token}`);
+      }
+       else {
         setSnackbarMessage("Kullanıcı adı veya şifre hatalı!");
         setOpenSnackbar(true);
       }
@@ -100,7 +110,8 @@ export default function SignIn() {
       setLoading(false); // Stop loading
     }
   };
-
+  
+ 
   const validateInputs = () => {
     const username = document.getElementById("username") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;

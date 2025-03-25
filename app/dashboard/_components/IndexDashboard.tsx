@@ -10,8 +10,6 @@ import AppNavbar from "./AppNavbar";
 import AdminCarTable from "./CarPage";
 
 export default function Dashboard() {
-
-
   return (
    <div>
      <Box sx={{ display: "flex" }}>

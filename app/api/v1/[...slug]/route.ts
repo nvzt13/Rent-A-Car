@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { prisma } from "@/lib/prisma";
 import { Black_And_White_Picture } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
@@ -248,7 +249,9 @@ export async function POST(
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 403 });
     } 
      if(admin && isPasswordValid){
-       return NextResponse.json({message:"Admin is ttuth!"}, {status:201})
+      const token = jwt.sign({ userId: admin.id }, 'SECRET_KEY', { expiresIn: '1h' });
+
+    return  NextResponse.json({ message: 'Login successful', token });
      }
       } catch (error) {
         console.log("Error in admin case:", error);
@@ -327,7 +330,6 @@ export async function PUT(
 ) {
   const { slug } = await params;
   const [table, id] = slug;
-  console.log(table, id + " _____________________");
   const contentType = request.headers.get("content-type") || "";
 
   // Check for missing table or ID
