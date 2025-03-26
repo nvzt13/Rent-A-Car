@@ -1,4 +1,5 @@
-"use client"
+"use client"; // Bu satırı ekleyin
+
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -9,18 +10,26 @@ import Stack from '@mui/material/Stack';
 import Link from 'next/link'; // Next.js Link importu
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
+import { useRouter } from 'next/navigation'; // useRouter'u sadece client tarafında kullanabilirsiniz
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
   { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/rental' },
   { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
+  { text: 'Çıkış Yap' }
 ];
 
 export default function MenuContent() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const router = useRouter(); // useRouter hook'u sadece client'ta kullanılabilir
 
-  const handleListItemClick = (index) => {
+  const handleListItemClick = (index: number) => {
     setSelectedIndex(index);
+  };
+
+  const handleLogout = () => {
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;"; // Cookie'yi sil
+    router.push('/signin'); // Giriş sayfasına yönlendir
   };
 
   return (
@@ -28,11 +37,31 @@ export default function MenuContent() {
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index}>
-            <Link href={item.link} passHref legacyBehavior>
+            {item.link ? (
+              <Link href={item.link} passHref legacyBehavior>
+                <ListItemButton
+                  component="a"
+                  selected={selectedIndex === index}
+                  onClick={() => handleListItemClick(index)}
+                  sx={{
+                    bgcolor: selectedIndex === index ? 'primary.main' : 'transparent',
+                    color: selectedIndex === index ? 'black' : 'inherit',
+                    '&:hover': {
+                      bgcolor: 'primary.light',
+                    },
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{ color: selectedIndex === index ? 'white' : 'inherit' }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </Link>
+            ) : (
               <ListItemButton
-                component="a"
-                selected={selectedIndex === index}
-                onClick={() => handleListItemClick(index)}
+                onClick={handleLogout} // Çıkış işlemi
                 sx={{
                   bgcolor: selectedIndex === index ? 'primary.main' : 'transparent',
                   color: selectedIndex === index ? 'black' : 'inherit',
@@ -48,7 +77,7 @@ export default function MenuContent() {
                 </ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
-            </Link>
+            )}
           </ListItem>
         ))}
       </List>

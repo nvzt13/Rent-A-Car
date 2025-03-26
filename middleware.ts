@@ -1,16 +1,17 @@
-// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const url = new URL(request.url);
-  const token = url.searchParams.get('token') || request.headers.get('Authorization')?.split(' ')[1];
+  const token = request.cookies.get('token'); // Cookie'den token al
+  console.log("Middleware token:", token);  // Token'ı burada loglayarak kontrol edin.
 
   if (!token) {
     return NextResponse.redirect(new URL('/signin', request.url)); // Token yoksa login sayfasına yönlendir
   }
 
-  // Token var, bu noktada doğrulama API'sine yönlendirme yapabiliriz
-  return NextResponse.next();
+  // İsteğe bağlı olarak, burada token doğrulama logic'i ekleyebilirsiniz.
+  // Token doğrulamak için bir API'ye request yapabilirsiniz.
+  
+  return NextResponse.next(); // Token varsa devam et
 }
 
 // Middleware'in çalışacağı yolları belirt

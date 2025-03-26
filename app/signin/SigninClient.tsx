@@ -68,49 +68,46 @@ export default function SignIn() {
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); 
+  event.preventDefault();
 
-    const isValid = validateInputs();
-    if (!isValid) return;
+  const isValid = validateInputs();
+  if (!isValid) return;
 
-    setLoading(true); // Start loading
-    const data = new FormData(event.currentTarget);
-    const username = data.get("username");
-    const password = data.get("password");
+  setLoading(true);
+  const data = new FormData(event.currentTarget);
+  const username = data.get("username");
+  const password = data.get("password");
 
-    try {
-      const token = localStorage.getItem("token"); 
-      console.log(token)
-      const response = await fetch(`/api/v1/admin`, {
-        method:"POST",
-        headers: {
+  try {
+    const response = await fetch(`/api/v1/admin`, {
+      method: "POST",
+      headers: {
         'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}` 
       },
-      body: JSON.stringify({ username, password })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-      // localStorage.clear()
-      
-        // Daha sonra, token'i manuel olarak ekleyip sayfaya yönlendirme yapabilirsin
-        const token = localStorage.getItem('token');
-        router.push(`/dashboard?token=${token}`);
-      }
-       else {
-        setSnackbarMessage("Kullanıcı adı veya şifre hatalı!");
-        setOpenSnackbar(true);
-      }
-    } catch (error) {
-      console.log(error)
-      setSnackbarMessage("Bir hata oluştu, lütfen tekrar deneyin.");
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const token = data.token;
+
+      // JWT'yi tarayıcıda cookie'ye ekleyelim
+      document.cookie = `token=${token}; path=/;`;  // Tarayıcıda cookie oluşturuluyor
+
+      // Başarılı giriş sonrası dashboard sayfasına yönlendir
+      router.push(`/dashboard`);
+    } else {
+      setSnackbarMessage("Kullanıcı adı veya şifre hatalı!");
       setOpenSnackbar(true);
-    } finally {
-      setLoading(false); // Stop loading
     }
-  };
-  
+  } catch (error) {
+    console.log(error);
+    setSnackbarMessage("Bir hata oluştu, lütfen tekrar deneyin.");
+    setOpenSnackbar(true);
+  } finally {
+    setLoading(false);
+  }
+};
  
   const validateInputs = () => {
     const username = document.getElementById("username") as HTMLInputElement;
