@@ -5,7 +5,6 @@ import type {} from "@mui/x-tree-view/themeAugmentation";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import AppNavbar from "./AppNavbar";
 
 import AdminCarTable from "./CarPage";
 
@@ -13,7 +12,7 @@ export default function Dashboard() {
   return (
    <div>
      <Box sx={{ display: "flex" }}>
-      <AppNavbar />
+     
       <Box
         component="main"
         sx={{

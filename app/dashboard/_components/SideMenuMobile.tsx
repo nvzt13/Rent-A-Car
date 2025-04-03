@@ -23,12 +23,14 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
     { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
     { text: 'Kiralama', icon: <AnalyticsRoundedIcon />, link: '/dashboard/rental' },
     { text: 'Yeni Araba', icon: <AnalyticsRoundedIcon />, link: '/dashboard/add-car' },
+    { text: 'Ana Sayfa', icon: <AnalyticsRoundedIcon />, link: '/' },
   ];
     const [selectedIndex, setSelectedIndex] = React.useState(0);
   
     const handleListItemClick = (index) => {
       setSelectedIndex(index);
     };
+    console.log(document.cookie)
   return (
     <Drawer
       anchor="right"

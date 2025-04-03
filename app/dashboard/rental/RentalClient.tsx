@@ -44,7 +44,6 @@ const RentalClient = () => {
               <TableCell><Typography fontWeight="bold">Teslim</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Alış Saati</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Teslim Saati</Typography></TableCell>
-              <TableCell><Typography fontWeight="bold">Durum</Typography></TableCell>
               <TableCell align="center"><Typography fontWeight="bold">İşlemler</Typography></TableCell>
             </TableRow>
           </TableHead>
@@ -56,7 +55,6 @@ const RentalClient = () => {
                 <TableCell>{new Date(rental.returnDate).toLocaleDateString()}</TableCell>
                 <TableCell>{rental.takeHour}</TableCell>
                 <TableCell>{rental.deliveryHour}</TableCell>
-                <TableCell>{rental.isAprove ? "Onaylandı" : "Beklemede"}</TableCell>
                 <TableCell align="center">
                   <Stack direction="row" spacing={1} justifyContent="center">
                     <Tooltip title={rental.isAprove ? "Onay Geri Al" : "Onayla"}>

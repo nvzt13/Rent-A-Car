@@ -55,9 +55,8 @@ const Header = () => {
             <Link href="/">
             <Button color="inherit">Ana Sayfa</Button>
             </Link>
-
           <Link href="/about"> <Button color="inherit">Hakkımızda</Button></Link>
-            <Link href="contact"><Button color="inherit">İletişim</Button></Link>
+            <Link href="/contact"><Button color="inherit">İletişim</Button></Link>
           </Box>
         </Toolbar>
       </StyledAppBar>

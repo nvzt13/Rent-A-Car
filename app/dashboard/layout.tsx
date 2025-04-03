@@ -1,12 +1,12 @@
 import React from 'react'
 import SideMenu from './_components/SideMenu'
-
+import AppNavbar from "./_components/AppNavbar";
 const Layout = ({ children }: Readonly<{
   children: React.ReactNode;
 }>) => {
   return (
     <div className="flex">
-      {/* SideMenu sadece medium (md) ve daha büyük ekranlarda gösterilecek */}
+   <AppNavbar />
       <div className="hidden md:block md:w-1/4 lg:w-1/5">
         <SideMenu />
       </div>

@@ -2,7 +2,7 @@
 import AddCarClient from './AddCarClient'
 const page = () => {
   return (
-    <div>
+    <div className="min-h-screen">
       <AddCarClient />
     </div>
   )
