@@ -13,9 +13,6 @@ React.useEffect(() => {
   }, [cars]);
   return (
     <div style={{ width: "100%" }}>
-           <Typography variant="h4" gutterBottom>
-        Arabalar
-      </Typography>
       <DataGrid
         rows={cars}
         columns={columns}

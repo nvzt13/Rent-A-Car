@@ -1,10 +1,12 @@
-import Dashboard from "./_components/IndexDashboard";
-const page = () => {
-  return (
-    <div>
-      <Dashboard />
-    </div>
-  );
-};
+import React from 'react'
+import PageClient from './PageClient'
 
-export default page;
+const DashboardPage = () => {
+  return (
+    <div className='min-h-screen'>
+        <PageClient />
+    </div>
+  )
+}
+
+export default DashboardPage

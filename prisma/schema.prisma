@@ -32,7 +32,6 @@ model Rental {
   returnDate    DateTime
   customerName  String
   takeHour      String
-  deliveryHour      String
   isAprove        Boolean @default(false)
   phoneNumber   String
   carId         Int

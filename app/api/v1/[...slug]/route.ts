@@ -83,7 +83,6 @@ export async function GET(
             returnDate: true,
             customerName: true,
             takeHour: true,
-            deliveryHour: true,
             isAprove: true, // Bu satır status alanını da çeker
             phoneNumber: true,
             car: true,

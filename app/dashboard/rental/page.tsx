@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography } from '@mui/material';
 import RentalClient from './RentalClient';
 const AddRental = () => {
   return (
-      <div>
+      <div className="min-h-screen">
         <RentalClient />
       </div>
   );

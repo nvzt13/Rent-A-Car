@@ -67,6 +67,16 @@ export default function SignIn() {
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
   const router = useRouter();
 
+  React.useEffect(() => {
+    const cookies = document.cookie.split(";").map(cookie => cookie.trim());
+    const token = cookies.find(cookie => cookie.startsWith("token="));
+  
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, []);
+  
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
 

@@ -18,7 +18,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
     customerName: '',
     phoneNumber: '',
     takeHour: '',
-    deliveryHour: '',
     rentalDate: '',
     returnDate: '',
     carId: id,
@@ -101,7 +100,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
           customerName: '',
           phoneNumber: '',
           takeHour: '',
-          deliveryHour: '',
           rentalDate: '',
           returnDate: '',
           carId: id,
@@ -120,7 +118,7 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        maxWidth: 400,
+        maxWidth: 800,
         margin: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -176,16 +174,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
         onChange={handleChange}
         required
       />
-
-      <TextField
-        label="Teslim Saati"
-        name="deliveryHour"
-        type="time"
-        value={formData.deliveryHour}
-        onChange={handleChange}
-        required
-      />
-
       <DatePicker
         selected={startDate}
         onChange={(date) => setStartDate(date)}
