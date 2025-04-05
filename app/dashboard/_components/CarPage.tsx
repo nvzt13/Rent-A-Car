@@ -7,10 +7,8 @@ import { Typography } from "@mui/material";
 
 export default function CarPage() {
   const cars = useAppSelector((state) => state.cars.cars);
+  console.log(cars)
   const columns = useGridColumns();
-React.useEffect(() => {
-    console.log(cars);
-  }, [cars]);
   return (
     <div style={{ width: "100%" }}>
       <DataGrid

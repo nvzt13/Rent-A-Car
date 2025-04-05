@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 
 const rentalData = [
   { month: "Jan", rentals: 120, revenue: 5000 },
@@ -13,15 +14,17 @@ const rentalData = [
 ];
 
 const pieData = [
-  { name: "Ekonomik", value: 400 },
-  { name: "Orta Segment", value: 300 },
-  { name: "Lüks", value: 200 },
+  { name: "Ekonomi", value: 400 },
+  { name: "Premium", value: 200 },
   { name: "SUV", value: 100 },
 ];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+
 const PageAdminStats = () => {
+  const cars = useAppSelector((state) => state.cars.cars);
+  console.log("Rentals" + cars)
   return (
     <div style={{ display: "grid", gap: "20px", padding: "20px", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
       <Card>
