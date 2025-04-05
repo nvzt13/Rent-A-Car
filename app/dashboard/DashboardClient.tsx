@@ -22,11 +22,11 @@ const pieData = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 
-const PageAdminStats = () => {
+const DashboardClient = () => {
   const cars = useAppSelector((state) => state.cars.cars);
-  console.log("Rentals" + cars)
+  console.log(cars)
   return (
-    <div style={{ display: "grid", gap: "20px", padding: "20px", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+    <div style={{ gap: "20px", padding: "20px", maxWidth:"980px", margin: "auto" }}>
       <Card>
         <CardContent>
           <Typography variant="h6">Araç Kiralama Sayıları</Typography>
@@ -72,4 +72,4 @@ const PageAdminStats = () => {
   );
 };
 
-export default PageAdminStats;
+export default DashboardClient;

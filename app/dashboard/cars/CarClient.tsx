@@ -9,9 +9,11 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded"; // Buton ikonu
 import { useRouter } from "next/navigation";
-
-import AdminCarTable from "../_components/CarPage";
 import { Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { useAppSelector } from "@/lib/hooks";
+import { useGridColumns } from "../_components/gridData";
+
 
 export default function Dashboard() {
   const router = useRouter();
@@ -21,6 +23,9 @@ export default function Dashboard() {
     router.push("/dashboard/add-car"); // Yeni araba sayfasına yönlendir
   };
 
+  const cars = useAppSelector((state) => state.cars.cars);
+  console.log(cars);
+  const columns = useGridColumns();
   return (
     <div>
       <Box sx={{ display: "flex" }}>
@@ -33,9 +38,9 @@ export default function Dashboard() {
             overflow: "auto",
           }}
         >
-                     <Typography variant="h4" gutterBottom>
-                  Arabalar
-                </Typography>
+          <Typography variant="h4" gutterBottom>
+            Arabalar
+          </Typography>
           <Stack
             spacing={2}
             sx={{
@@ -45,8 +50,18 @@ export default function Dashboard() {
               mt: { xs: 8, md: 0 },
             }}
           >
-
-            <AdminCarTable />
+            <div style={{ width: "100%" }}>
+              <DataGrid
+                rows={cars}
+                columns={columns}
+                getRowClassName={(params) =>
+                  params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+                }
+                initialState={{
+                  pagination: { paginationModel: { pageSize: 20 } },
+                }}
+              />
+            </div>
             <Button
               variant="contained"
               color="primary"

@@ -13,9 +13,8 @@ import { useRouter } from "next/navigation";
 import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 import DirectionsCarRoundedIcon from "@mui/icons-material/DirectionsCarRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { Divider, Typography } from "@mui/material"; 
+import { Divider, Typography } from "@mui/material";
 
 const mainListItems = [
   {
@@ -32,11 +31,6 @@ const mainListItems = [
     text: "Kiralama",
     icon: <CalendarMonthRoundedIcon />,
     link: "/dashboard/rental",
-  },
-  {
-    text: "Ana Sayfa",
-    icon: <HomeRoundedIcon />,
-    link: "/",
   },
   {
     text: "Çıkış Yap",
@@ -67,68 +61,43 @@ export default function MenuContent() {
   };
 
   return (
-    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
+    <Stack
+      sx={{
+        flexGrow: 1,
+        p: 2,
+        justifyContent: "space-between",
+        bgcolor: "#072625", // siyah arka plan
+        minHeight: "calc(100vh - 64px)",
+        color: "white", // yazılar beyaz
+      }}
+    >
       <List dense>
-        {/* Main Menu Items */}
-        {mainListItems.slice(0, 4).map((item, index) => (
-          <ListItem key={index}>
-            {item.link ? (
-              <Link href={item.link} passHref legacyBehavior>
-                <ListItemButton
-                  component="a"
-                  onClick={() => handleListItemClick(index)}
-                  sx={{
-                    bgcolor:
-                      selectedIndex === index ? "black" : "transparent", // Seçili öğe siyah
-                    color: selectedIndex === index ? "white" : "inherit", // Seçili öğe metin beyaz
-                    "&:hover": {
-                      bgcolor: "primary.dark", // Hover rengi koyulaştırıldı
-                      color: "white", // Hover'da metin beyaz
-                    },
-                    borderRadius: "8px",
-                    mb: 1, // her item arasında mesafe
-                    transition: "all 0.3s ease", // yumuşak geçiş efekti
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      color: selectedIndex === index ? "white" : "inherit",
-                    }}
-                  >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          fontWeight: selectedIndex === index ? "bold" : "normal",
-                        }}
-                      >
-                        {item.text}
-                      </Typography>
-                    }
-                  />
-                </ListItemButton>
-              </Link>
-            ) : (
+        {mainListItems.slice(0, 3).map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <Link href={item.link} passHref legacyBehavior>
               <ListItemButton
-                onClick={() => handleLogout(index)}
+                component="a"
+                onClick={() => handleListItemClick(index)}
                 sx={{
-                  bgcolor:
-                    selectedIndex === index ? "black" : "transparent", // Seçili öğe siyah
-                  color: selectedIndex === index ? "white" : "inherit", // Seçili öğe metin beyaz
+                  bgcolor: selectedIndex === index ? "#005f73" : "transparent",
+                  color: selectedIndex === index ? "#ffffff" : "#ccc",
                   "&:hover": {
-                    bgcolor: "primary.dark", // Hover rengi koyulaştırıldı
-                    color: "white", // Hover'da metin beyaz
+                    bgcolor: "#0a9396",
                   },
                   borderRadius: "8px",
-                  mb: 1, // her item arasında mesafe
-                  transition: "all 0.3s ease", // yumuşak geçiş efekti
+                  mb: 1,
+                  pl: selectedIndex === index ? 2 : 3,
+                  borderLeft:
+                    selectedIndex === index
+                      ? "4px solid #94d2bd"
+                      : "4px solid transparent",
+                  transition: "all 0.3s ease",
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    color: selectedIndex === index ? "white" : "inherit",
+                    color: selectedIndex === index ? "#ffffff" : "#ccc",
+                    minWidth: 40,
                   }}
                 >
                   {item.icon}
@@ -138,6 +107,7 @@ export default function MenuContent() {
                     <Typography
                       sx={{
                         fontWeight: selectedIndex === index ? "bold" : "normal",
+                        color: selectedIndex === index ? "#ffffff" : "#ccc",
                       }}
                     >
                       {item.text}
@@ -145,44 +115,39 @@ export default function MenuContent() {
                   }
                 />
               </ListItemButton>
-            )}
+            </Link>
           </ListItem>
         ))}
       </List>
 
-      {/* Logout Item with Divider */}
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 2, borderColor: "#444" }} />
+
       <List>
-        <ListItem key="logout">
+        <ListItem key="logout" disablePadding>
           <ListItemButton
-            onClick={() => handleLogout(4)}
+            onClick={() => handleLogout(3)}
             sx={{
-              bgcolor:
-                selectedIndex === 4 ? "black" : "transparent", // Seçili öğe siyah
-              color: selectedIndex === 4 ? "white" : "inherit", // Seçili öğe metin beyaz
+              bgcolor: selectedIndex === 3 ? "#222" : "transparent",
+              color: "white",
               "&:hover": {
-                bgcolor: "error.dark", // Logout hover rengi koyulaştırıldı
-                color: "white", // Hover'da metin beyaz
+                bgcolor: "#b71c1c", // koyu kırmızı hover
               },
               borderRadius: "8px",
-              transition: "all 0.3s ease", // yumuşak geçiş efekti
+              transition: "all 0.3s ease",
             }}
           >
-            <ListItemIcon
-              sx={{
-                color: selectedIndex === 4 ? "white" : "inherit",
-              }}
-            >
-              {mainListItems[4].icon}
+            <ListItemIcon sx={{ color: "white", minWidth: 40 }}>
+              {mainListItems[3].icon}
             </ListItemIcon>
             <ListItemText
               primary={
                 <Typography
                   sx={{
-                    fontWeight: selectedIndex === 4 ? "bold" : "normal",
+                    fontWeight: selectedIndex === 3 ? "bold" : "normal",
+                    color: "white",
                   }}
                 >
-                  {mainListItems[4].text}
+                  {mainListItems[3].text}
                 </Typography>
               }
             />

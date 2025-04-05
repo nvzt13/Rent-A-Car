@@ -1,5 +1,5 @@
 import React from 'react'
-import PageClient from './PageClient'
+import PageClient from './DashboardClient'
 
 const DashboardPage = () => {
   return (
