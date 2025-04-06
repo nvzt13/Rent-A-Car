@@ -66,7 +66,7 @@ export default function MenuContent() {
         flexGrow: 1,
         p: 2,
         justifyContent: "space-between",
-        bgcolor: "#072625", // siyah arka plan
+        bgcolor: "#f5f5f5", // siyah arka plan
         minHeight: "calc(100vh - 64px)",
         color: "white", // yazılar beyaz
       }}
@@ -96,7 +96,7 @@ export default function MenuContent() {
               >
                 <ListItemIcon
                   sx={{
-                    color: selectedIndex === index ? "#ffffff" : "#ccc",
+                    color: selectedIndex === index ? "#ffffff" : "#000",
                     minWidth: 40,
                   }}
                 >
@@ -107,7 +107,7 @@ export default function MenuContent() {
                     <Typography
                       sx={{
                         fontWeight: selectedIndex === index ? "bold" : "normal",
-                        color: selectedIndex === index ? "#ffffff" : "#ccc",
+                        color: selectedIndex === index ? "#ffffff" : "#000",
                       }}
                     >
                       {item.text}
@@ -136,7 +136,7 @@ export default function MenuContent() {
               transition: "all 0.3s ease",
             }}
           >
-            <ListItemIcon sx={{ color: "white", minWidth: 40 }}>
+            <ListItemIcon sx={{ color: "#000", minWidth: 40 }}>
               {mainListItems[3].icon}
             </ListItemIcon>
             <ListItemText
@@ -144,7 +144,7 @@ export default function MenuContent() {
                 <Typography
                   sx={{
                     fontWeight: selectedIndex === 3 ? "bold" : "normal",
-                    color: "white",
+                    color: "#000",
                   }}
                 >
                   {mainListItems[3].text}

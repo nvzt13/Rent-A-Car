@@ -4,20 +4,18 @@ import { Black_And_White_Picture } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs';
 
-// GET
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string[] }> }
 ) {
   const { slug } = await params;
   const [table, id, query] = slug;
+
   switch (table) {
     case "car":
       if (table && id && query) {
         const blockDays = await prisma.car.findFirst({
-          where: {
-            id: Number(id),
-          },
+          where: { id: Number(id) },
           include: {
             rentals: {
               select: {
@@ -35,22 +33,21 @@ export async function GET(
           );
         }
 
-        // Calculate block days
         const blockDates = blockDays.rentals
           .map((rental) => {
             const rentalStart = new Date(rental.rentalDate);
             const rentalEnd = new Date(rental.returnDate);
             const blockedDays = [];
 
-            let currentDate = rentalStart;
+            let currentDate = new Date(rentalStart);
             while (currentDate <= rentalEnd) {
-              blockedDays.push(currentDate.toISOString().split("T")[0]); // Save the date in YYYY-MM-DD format
-              currentDate.setDate(currentDate.getDate() + 1); // Increment the day
+              blockedDays.push(currentDate.toISOString().split("T")[0]);
+              currentDate.setDate(currentDate.getDate() + 1);
             }
 
             return blockedDays;
           })
-          .flat(); // Flatten the array of block days
+          .flat();
 
         return NextResponse.json(
           {
@@ -70,10 +67,11 @@ export async function GET(
       } catch (error) {
         console.log("Error fetching cars:", error);
         return NextResponse.json(
-          { message: "Failed to fetch cars", error: error },
+          { message: "Failed to fetch cars", error },
           { status: 500 }
         );
       }
+
     case "rental":
       try {
         const allRentals = await prisma.rental.findMany({
@@ -83,7 +81,7 @@ export async function GET(
             returnDate: true,
             customerName: true,
             takeHour: true,
-            isAprove: true, // Bu satır status alanını da çeker
+            isAprove: true,
             phoneNumber: true,
             car: true,
           },
@@ -92,6 +90,53 @@ export async function GET(
       } catch (error) {
         console.log(error);
       }
+
+    case "statistics":
+      try {
+        const rentals = await prisma.rental.findMany({
+          include: { car: true },
+        });
+
+        const statsMap = new Map();
+
+        rentals.forEach((rental) => {
+          const date = new Date(rental.rentalDate);
+          const month = date.getMonth(); // 0-11
+          const year = date.getFullYear();
+          const key = `${year}-${month}`;
+
+          if (!statsMap.has(key)) {
+            statsMap.set(key, {
+              month: new Date(year, month).toLocaleString("default", {
+                month: "long",
+              }),
+              year,
+              totalIncome: 0,
+              totalRentals: 0,
+            });
+          }
+
+          const entry = statsMap.get(key);
+          entry.totalIncome += rental.car.price;
+          entry.totalRentals += 1;
+        });
+
+        const data = Array.from(statsMap.values()).sort((a, b) => {
+          return new Date(`${a.year}-${a.month}`) - new Date(`${b.year}-${b.month}`);
+        });
+
+        return NextResponse.json(
+          { message: "Aylık gelir ve kiralama sayıları", data },
+          { status: 200 }
+        );
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+        return NextResponse.json(
+          { message: "İstatistikler alınamadı", error },
+          { status: 500 }
+        );
+      }
+
     default:
       return NextResponse.json({ message: "Invalid slug" }, { status: 400 });
   }
