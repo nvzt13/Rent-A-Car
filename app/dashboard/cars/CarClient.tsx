@@ -24,7 +24,6 @@ export default function Dashboard() {
   };
 
   const cars = useAppSelector((state) => state.cars.cars);
-  console.log(cars);
   const columns = useGridColumns();
   return (
     <div>
