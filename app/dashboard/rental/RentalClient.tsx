@@ -1,9 +1,8 @@
-"use client"
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import { Rental } from "@prisma/client";
+import { Rental, Car } from "@prisma/client";
 import {
-  CircularProgress,
   IconButton,
   Typography,
   Paper,
@@ -13,10 +12,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   Box,
   Stack,
   Tooltip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   AiOutlineCheckCircle,
@@ -24,18 +26,72 @@ import {
   AiOutlineLoading3Quarters,
   AiOutlineArrowLeft,
 } from "react-icons/ai";
-import { deleteRental, updateRental } from "@/lib/slice/rentalSlice"; // Redux slice'a göre bir update fonksiyonu olmalı
+import { deleteRental, updateRental } from "@/lib/slice/rentalSlice";
 
 const RentalClient = () => {
   const [loadingAprove, setLoadingAprove] = useState<{ [key: number]: boolean }>({});
+  const [filter, setFilter] = useState<"all" | "approved" | "unapproved">("all");
+  const [selectedCarId, setSelectedCarId] = useState<string>("all");
+
   const rentals = useAppSelector((state: { rentals: { rentals: Rental[] } }) => state.rentals.rentals);
+  const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars);
+  console.log(cars)
+  if (!rentals.length || !cars.length) {
+  return <Typography>Yükleniyor...</Typography>;
+}
   const dispatch = useAppDispatch();
+
+  const filteredRentals = rentals.filter((rental) => {
+    const statusFilter =
+      filter === "approved" ? rental.isAprove :
+      filter === "unapproved" ? !rental.isAprove : true;
+
+    const carFilter = selectedCarId === "all" ? true : rental.carId === selectedCarId;
+
+    return statusFilter && carFilter;
+  });
+console.log(filteredRentals)
   return (
     <Box sx={{ width: "100%", padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Randevular
-      </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: 2, boxShadow: 3, borderRadius: 2 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" gutterBottom>
+          Randevular
+        </Typography>
+        <Stack direction="row" spacing={2}>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="filter-label">Durum</InputLabel>
+            <Select
+              labelId="filter-label"
+              value={filter}
+              label="Durum"
+              onChange={(e) => setFilter(e.target.value as "all" | "approved" | "unapproved")}
+            >
+              <MenuItem value="all">Tümü</MenuItem>
+              <MenuItem value="approved">Onaylı</MenuItem>
+              <MenuItem value="unapproved">Onaysız</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="car-filter-label">Araba</InputLabel>
+            <Select
+              labelId="car-filter-label"
+              value={selectedCarId}
+              label="Araba"
+              onChange={(e) => setSelectedCarId(e.target.value)}
+            >
+              <MenuItem value="all">Tüm Arabalar</MenuItem>
+              {cars?.map((car) => (
+                <MenuItem key={car.id} value={car.id}>
+                  {car.name} {car.carModel}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+      </Box>
+
+      <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -47,7 +103,7 @@ const RentalClient = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rentals.map((rental) => (
+            {filteredRentals?.map((rental) => (
               <TableRow key={rental.id}>
                 <TableCell>{rental.customerName}</TableCell>
                 <TableCell>{new Date(rental.rentalDate).toLocaleDateString()}</TableCell>
@@ -73,14 +129,17 @@ const RentalClient = () => {
                       </span>
                     </Tooltip>
                     <Tooltip title="Sil">
-                      <IconButton color="error" onClick={() => dispatch(deleteRental(rental.id))}>
+                      <IconButton
+                        color="error"
+                        onClick={() => dispatch(deleteRental(rental.id))}
+                      >
                         <AiOutlineDelete />
                       </IconButton>
                     </Tooltip>
                   </Stack>
                 </TableCell>
               </TableRow>
-            ))}
+            )) }
           </TableBody>
         </Table>
       </TableContainer>

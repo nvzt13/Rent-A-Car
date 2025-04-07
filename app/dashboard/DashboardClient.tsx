@@ -30,6 +30,7 @@ const DashboardClient = () => {
 
   const [carsLength, setCarsLength] = useState(0);
   const [waitedRentals, setWaitedRentals] = useState(0);
+  const [visitorCounter, setVisitorCounter] = useState(0);
   const [rentalData, setRentalData] = useState<
     { month: string; revenue: number; rentals: number }[]
   >([]);
@@ -46,7 +47,7 @@ const DashboardClient = () => {
 
   useEffect(() => {
     setCarsLength(cars.length);
-    setWaitedRentals(rentals.filter((rental) => rental.isAprove === false).length);
+    setWaitedRentals(rentals?.filter((rental) => rental.isAprove === false).length);
   }, [cars, rentals]);
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const DashboardClient = () => {
       try {
         const res = await fetch("/api/v1/statistics");
         const data = await res.json();
-        const formatted = data.data.map((item: any) => ({
+        const formatted = data?.data?.map((item: any) => ({
           month: `${item.month} ${item.year}`,
           revenue: item.totalIncome,
           rentals: item.totalRentals,
@@ -69,8 +70,14 @@ const DashboardClient = () => {
   }, []);
 
   const latestRevenue =
-    rentalData.length > 0 ? rentalData[rentalData.length - 1].revenue : 0;
-
+    rentalData?.length > 0 ? rentalData[rentalData.length - 1].revenue : 0;
+useEffect(() => {
+  fetch("/api/v1/visitor")
+    .then((res) => res.json())
+    .then((data) => {
+      setVisitorCounter(data.count)
+    });
+}, []);
   return (
     <div
       style={{
@@ -96,7 +103,7 @@ const DashboardClient = () => {
           </Typography>
           <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
             <Typography variant="h5" fontWeight="bold">
-              1.240
+              {visitorCounter}
             </Typography>
             <PeopleAltRoundedIcon color="primary" />
           </Box>
