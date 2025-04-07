@@ -119,9 +119,6 @@ export default function MenuContent() {
           </ListItem>
         ))}
       </List>
-
-      <Divider sx={{ my: 2, borderColor: "#444" }} />
-
       <List>
         <ListItem key="logout" disablePadding>
           <ListItemButton

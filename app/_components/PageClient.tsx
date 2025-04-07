@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation"; // Import Next.js router for navigation
 import CarCard from "@/app/_components/Card";
 import Skeleton from "@mui/material/Skeleton";
 import { useAppSelector } from "@/lib/hooks";
-import { Grid2, Button } from "@mui/material"; // Added Button import
+import { Grid2 } from "@mui/material"; // Added Button import
 import { Car } from "@prisma/client";
 
 const PageClient = () => {

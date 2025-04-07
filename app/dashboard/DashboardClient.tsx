@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Box,
-} from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import {
   BarChart,
   Bar,
@@ -32,6 +26,13 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 const DashboardClient = () => {
   const cars = useAppSelector((state) => state.cars.cars);
+  const rentals = useAppSelector((state) => state.rentals.rentals);
+
+  const [carsLength, setCarsLength] = useState(0);
+  const [waitedRentals, setWaitedRentals] = useState(0);
+  const [rentalData, setRentalData] = useState<
+    { month: string; revenue: number; rentals: number }[]
+  >([]);
 
   const suvCount = cars.filter((car) => car.carType === "Suv").length;
   const premiumCount = cars.filter((car) => car.carType === "Premium").length;
@@ -43,9 +44,10 @@ const DashboardClient = () => {
     { name: "Suv", value: suvCount },
   ];
 
-  const [rentalData, setRentalData] = useState<
-    { month: string; revenue: number; rentals: number }[]
-  >([]);
+  useEffect(() => {
+    setCarsLength(cars.length);
+    setWaitedRentals(rentals.filter((rental) => rental.isAprove === false).length);
+  }, [cars, rentals]);
 
   useEffect(() => {
     const fetchStatistics = async () => {
@@ -66,6 +68,9 @@ const DashboardClient = () => {
     fetchStatistics();
   }, []);
 
+  const latestRevenue =
+    rentalData.length > 0 ? rentalData[rentalData.length - 1].revenue : 0;
+
   return (
     <div
       style={{
@@ -77,149 +82,135 @@ const DashboardClient = () => {
       }}
     >
       {/* İstatistik Kartları */}
-      <Grid container spacing={2}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+          gap: "20px",
+        }}
+      >
         {/* Aylık Ziyaretçi */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="subtitle2" color="textSecondary">
-              Aylık Ziyaretçi
+        <Card sx={{ p: 2 }}>
+          <Typography variant="subtitle2" color="textSecondary">
+            Aylık Ziyaretçi
+          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+            <Typography variant="h5" fontWeight="bold">
+              1.240
             </Typography>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-              <Typography variant="h5" fontWeight="bold">1.240</Typography>
-              <PeopleAltRoundedIcon color="primary" />
-            </Box>
-          </Card>
-        </Grid>
+            <PeopleAltRoundedIcon color="primary" />
+          </Box>
+        </Card>
 
         {/* Toplam Araba */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="subtitle2" color="textSecondary">
-              Toplam Araba
+        <Card sx={{ p: 2 }}>
+          <Typography variant="subtitle2" color="textSecondary">
+            Toplam Araba
+          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+            <Typography variant="h5" fontWeight="bold">
+              {carsLength}
             </Typography>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-              <Typography variant="h5" fontWeight="bold">{cars.length}</Typography>
-              <DirectionsCarRoundedIcon sx={{ color: "#1976d2" }} />
-            </Box>
-          </Card>
-        </Grid>
+            <DirectionsCarRoundedIcon sx={{ color: "#1976d2" }} />
+          </Box>
+        </Card>
 
-        {/* Toplam Randevu */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="subtitle2" color="textSecondary">
-              Toplam Randevu
+        {/* Bekleyen Randevu */}
+        <Card sx={{ p: 2 }}>
+          <Typography variant="subtitle2" color="textSecondary">
+            Bekleyen Randevu
+          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+            <Typography variant="h5" fontWeight="bold">
+              {waitedRentals}
             </Typography>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-              <Typography variant="h5" fontWeight="bold">350</Typography>
-              <CalendarMonthRoundedIcon sx={{ color: "#0288d1" }} />
-            </Box>
-          </Card>
-        </Grid>
+            <CalendarMonthRoundedIcon sx={{ color: "#0288d1" }} />
+          </Box>
+        </Card>
 
-        {/* Toplam Gelir */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="subtitle2" color="textSecondary">
-              Toplam Gelir
+        {/* Güncel Gelir */}
+        <Card sx={{ p: 2 }}>
+          <Typography variant="subtitle2" color="textSecondary">
+            Güncel Gelir
+          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+            <Typography variant="h5" fontWeight="bold">
+              ₺{latestRevenue.toLocaleString("tr-TR")}
             </Typography>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-              <Typography variant="h5" fontWeight="bold">₺125.000</Typography>
-              <MonetizationOnRoundedIcon sx={{ color: "#43a047" }} />
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
+            <MonetizationOnRoundedIcon sx={{ color: "#43a047" }} />
+          </Box>
+        </Card>
+      </div>
 
-      {/* Araç Kiralama Sayıları Grafiği */}
-      <Card style={{ width: "100%" }}>
+      {/* Aylık Gelir Grafiği */}
+      <Card>
         <CardContent>
-          <Typography variant="h6">Araç Kiralama Sayıları</Typography>
+          <Typography variant="h6">Aylık Gelir</Typography>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={rentalData}>
+            <LineChart data={rentalData}>
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="rentals" fill="#8884d8" />
-            </BarChart>
+              <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
+            </LineChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
-      {/* Kategori Dağılımı + Aylık Gelir */}
+      {/* Kategori ve Kiralama Sayısı Grafikleri */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr",
+          gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
           gap: "20px",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "20px",
-          }}
-        >
-          <div style={{ display: "grid", gap: "20px" }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Araç Kategori Dağılımı</Typography>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      fill="#8884d8"
-                      label
-                      isAnimationActive={false}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend
-                      layout="horizontal"
-                      verticalAlign="bottom"
-                      align="center"
+        {/* Araç Kategori Dağılımı */}
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Araç Kategori Dağılımı</Typography>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  label
+                  isAnimationActive={false}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
                     />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Aylık Gelir</Typography>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={rentalData}>
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        {/* Kiralama Sayıları */}
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Araç Kiralama Sayıları</Typography>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={rentalData}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="rentals" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
       </div>
-
-      <style jsx>{`
-        @media (min-width: 768px) {
-          div:nth-child(4) > div > div {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -100,6 +100,7 @@ export async function GET(
         const statsMap = new Map();
 
         rentals.forEach((rental) => {
+          if (!rental.isAprove) return;
           const date = new Date(rental.rentalDate);
           const month = date.getMonth(); // 0-11
           const year = date.getFullYear();
@@ -117,7 +118,14 @@ export async function GET(
           }
 
           const entry = statsMap.get(key);
-          entry.totalIncome += rental.car.price;
+          const rentalStart = new Date(rental.rentalDate);
+          const rentalEnd = new Date(rental.returnDate);
+          const daysRented = Math.ceil(
+            (rentalEnd.getTime() - rentalStart.getTime()) / (1000 * 3600 * 24) + 1
+          ); // Gün farkını al
+          
+          // Her kiralama için günlük ücret ile toplam geliri hesapla
+          entry.totalIncome += rental.car.price * daysRented; 
           entry.totalRentals += 1;
         });
 
@@ -191,7 +199,6 @@ export async function POST(
 
         // Convert formData to an object
         const data = Object.fromEntries(formData.entries());
-        console.log("Data object:", data);
 
         // Make sure the values are properly formatted for Prisma
         const carData = {
@@ -207,7 +214,6 @@ export async function POST(
 
         // Check if any required data is null
         if (Object.values(carData).some((value) => value === null)) {
-          console.log("Invalid data:", carData);
           return NextResponse.json(
             {
               message:
@@ -231,7 +237,6 @@ export async function POST(
           },
         });
 
-        console.log("Car created:", createCar);
         return NextResponse.json({
           message: "Car created successfully!",
           data: createCar,
@@ -259,7 +264,6 @@ export async function POST(
             customerName: body.customerName,
             phoneNumber: body.phoneNumber,
             takeHour: body.takeHour || null,
-            deliveryHour: body.deliveryHour,
             rentalDate: new Date(body.rentalDate).toISOString(),
             returnDate: new Date(body.returnDate).toISOString(),
             carId: Number(body.carId),
@@ -281,7 +285,6 @@ export async function POST(
       try {
         const body = await request.json()
         const  { username, password} = body
-        console.log(username, password)
         const admin = await prisma.admin.findFirst({ where: { name: username} });
 
     if (!admin) {
