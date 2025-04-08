@@ -1,11 +1,7 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import {
-  AiOutlineDelete,
-  AiOutlineEdit,
-} from "react-icons/ai";
-
+import RentalFormDialog from "./RentalFormDialog";
 import { Rental, Car } from "@prisma/client";
 import {
   IconButton,
@@ -25,114 +21,131 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import DateInput from "@/app/_components/DateInput";
-import { deleteRental } from "@/lib/slice/rentalSlice";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineDelete,
+  AiOutlineLoading3Quarters,
+  AiOutlineArrowLeft,
+  AiOutlineEdit,
+} from "react-icons/ai";
+import { deleteRental, updateRental } from "@/lib/slice/rentalSlice";
 
 const RentalClient = () => {
-  const [loadingAprove, setLoadingAprove] = useState<{
-    [key: number]: boolean;
-  }>({});
+  const [loadingAprove, setLoadingAprove] = useState<{ [key: number]: boolean }>({});
+  const [filter, setFilter] = useState<"all" | "approved" | "unapproved">("all");
   const [selectedCarId, setSelectedCarId] = useState<string>("all");
+  const [open, setOpen] = useState(false);
   const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
-  const [isEditing, setIsEditing] = useState(false);  // Düzenleme durumu
 
-  const rawRentals = useAppSelector(
-    (state: { rentals: { rentals: Rental[] | Rental } }) =>
-      state.rentals.rentals
-  );
-  const rentals: Rental[] = Array.isArray(rawRentals)
-    ? rawRentals
-    : rawRentals
-    ? [rawRentals]
-    : [];
-
-  const cars = useAppSelector(
-    (state: { cars: { cars: Car[]; loading: boolean } }) => state.cars.cars
-  );
   const dispatch = useAppDispatch();
+  const rentals = useAppSelector((state: { rentals: { rentals: Rental[] } }) => state.rentals.rentals);
+  const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars);
 
-  const filteredRentals = rentals.filter((rental: Rental) => {
-    const carFilter =
-      selectedCarId === "all"
-        ? true
-        : rental.carId?.toString() === selectedCarId.toString();
-    return carFilter;
+  if (!rentals?.length || !cars.length) {
+    return <Typography>Yükleniyor...</Typography>;
+  }
+
+  const filteredRentals = rentals.filter((rental) => {
+    const statusFilter =
+      filter === "approved" ? rental.isAprove :
+      filter === "unapproved" ? !rental.isAprove : true;
+
+    const carFilter = selectedCarId === "all" ? true : rental.carId === selectedCarId;
+
+    return statusFilter && carFilter;
   });
 
-  const handleEditClick = () => {
-    console.log("Düzenle");
-    setIsEditing(true);
+  const handleClickOpen = (rental: Rental) => {
+    setSelectedRental(rental);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedRental(null);
   };
 
   return (
     <Box sx={{ width: "100%", padding: 2 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h4" gutterBottom>
-          Randevular
-        </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" gutterBottom>Randevular</Typography>
 
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel id="car-filter-label">Araba</InputLabel>
-          <Select
-            labelId="car-filter-label"
-            value={selectedCarId}
-            label="Araba"
-            onChange={(e) => setSelectedCarId(e.target.value)}
-          >
-            <MenuItem value="all">Tüm Arabalar</MenuItem>
-            {cars?.map((car) => (
-              <MenuItem key={car.id} value={car.id.toString()}>
-                {car.name} {car.carModel}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Stack direction="row" spacing={2}>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="filter-label">Durum</InputLabel>
+            <Select
+              labelId="filter-label"
+              value={filter}
+              label="Durum"
+              onChange={(e) => setFilter(e.target.value as "all" | "approved" | "unapproved")}
+            >
+              <MenuItem value="all">Tümü</MenuItem>
+              <MenuItem value="approved">Onaylı</MenuItem>
+              <MenuItem value="unapproved">Onaysız</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="car-filter-label">Araba</InputLabel>
+            <Select
+              labelId="car-filter-label"
+              value={selectedCarId}
+              label="Araba"
+              onChange={(e) => setSelectedCarId(e.target.value)}
+            >
+              <MenuItem value="all">Tüm Arabalar</MenuItem>
+              {cars?.map((car) => (
+                <MenuItem key={car.id} value={car.id}>
+                  {car.name} {car.carModel}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
       </Box>
 
-      <Box sx={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(300px, 1fr))", gap:2, mt:12}}>
       <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <Typography fontWeight="bold">Müşteri Adı</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontWeight="bold">Telefon</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography fontWeight="bold">İşlemler</Typography>
-              </TableCell>
+              <TableCell><Typography fontWeight="bold">Müşteri Adı</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Alış</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Teslim</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Alış Saati</Typography></TableCell>
+              <TableCell align="center"><Typography fontWeight="bold">İşlemler</Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredRentals.map((rental) => (
-              <TableRow
-                key={rental.id}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: "#f5f5f5" },
-                }}
-                onClick={() => setSelectedRental(rental)} // Randevu seçildiğinde
-              >
+              <TableRow key={rental.id}>
                 <TableCell>{rental.customerName}</TableCell>
-                <TableCell>{rental.phoneNumber}</TableCell>
+                <TableCell>{new Date(rental.rentalDate).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(rental.returnDate).toLocaleDateString()}</TableCell>
+                <TableCell>{rental.takeHour}</TableCell>
                 <TableCell align="center">
                   <Stack direction="row" spacing={1} justifyContent="center">
-                    <Tooltip title="Düzenle">
+                    <Tooltip title={rental.isAprove ? "Onay Geri Al" : "Onayla"}>
                       <span>
                         <IconButton
-                          color="primary"
-                          onClick={handleEditClick} // Düzenleme tıklama
+                          color="success"
+                          onClick={() => dispatch(updateRental(rental.id))}
+                          disabled={loadingAprove[rental.id]}
                         >
-                          <AiOutlineEdit />
+                          {loadingAprove[rental.id] ? (
+                            <AiOutlineLoading3Quarters className="animate-spin" />
+                          ) : rental.isAprove ? (
+                            "onayla"
+                          ) : (
+                            
+                            "geri al"
+                          )}
                         </IconButton>
                       </span>
+                    </Tooltip>
+                    <Tooltip title="Düzenle">
+                      <IconButton color="primary" onClick={() => handleClickOpen(rental)}>
+                        <AiOutlineEdit />
+                      </IconButton>
                     </Tooltip>
                     <Tooltip title="Sil">
                       <IconButton
@@ -150,10 +163,7 @@ const RentalClient = () => {
         </Table>
       </TableContainer>
 
-
-      <DateInput rental={selectedRental} />
-      </Box>
-     
+      <RentalFormDialog open={open} onClose={handleClose} selectedRental={selectedRental} />
     </Box>
   );
 };
