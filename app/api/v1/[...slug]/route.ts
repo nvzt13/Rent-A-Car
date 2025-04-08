@@ -83,7 +83,7 @@ export async function GET(
             takeHour: true,
             isAprove: true,
             phoneNumber: true,
-            car: true,
+            carId: true,
           },
         });
         return NextResponse.json({ message: "Randevular", allRentals });

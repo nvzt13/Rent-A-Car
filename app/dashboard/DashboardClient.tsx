@@ -138,7 +138,7 @@ useEffect(() => {
         {/* Güncel Gelir */}
         <Card sx={{ p: 2 }}>
           <Typography variant="subtitle2" color="textSecondary">
-            Güncel Gelir
+            Toplam Gelir
           </Typography>
           <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
             <Typography variant="h5" fontWeight="bold">

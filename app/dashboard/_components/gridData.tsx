@@ -1,26 +1,29 @@
 import * as React from "react";
-import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress"; // Import loading icon
 import { GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
+import Chip from '@mui/material/Chip';
 
-
-function renderStatus(status: "Online" | "Offline") {
-  const colors: { [index: string]: "success" | "default" } = {
-    Online: "success",
-    Offline: "default",
-  };
-  return <Chip label={status} color={colors[status]} size="small" />;
+// Render status for boolean value
+function renderStatus(isAvailable: boolean) {
+  const color = isAvailable ? 'success' : 'error';  // Use 'success' for true (Aktif) and 'error' for false (Pasif)
+  return (
+    <Chip 
+      label={isAvailable ? 'Aktif' : 'Pasif'} 
+      color={color} 
+      size="small" 
+      sx={{ fontWeight: 'bold' }} // Text styling
+    />
+  );
 }
-
 
 interface Car {
   id: string;
   name: string;
-  status: "Online" | "Offline";
+  isAvailable: boolean; // Update to boolean
   price: number;
 }
 
@@ -66,7 +69,6 @@ export function useGridActions() {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${token}`,
         },
-
       });
       if (response.ok) {
         alert("Car deleted successfully");
@@ -89,13 +91,20 @@ export function useGridColumns() {
   const columns: GridColDef[] = [
     { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
     {
+      field: "isAvailable",
+      headerName: "Durum",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => renderStatus(params.row.isAvailable), // Use renderStatus here with boolean value
+    },
+    {
       field: "gear",
       headerName: "Fites",
       flex: 1,
       minWidth: 150,
     },
     { field: "price", headerName: "Fiyat (Günlük)", flex: 1, minWidth: 150 },
-    { field: "carModel", headerName: "Model", flex: 1, minWidth: 100 },
+    { field: "carModel", headerName: "Model", flex: 1, minWidth: 50 },
     { field: "carType", headerName: "Sinif", flex: 1, minWidth: 150 },
     { field: "fuelType", headerName: "Yakit", flex: 1, minWidth: 150 },
     { field: "km", headerName: "KM", flex: 1, minWidth: 150 },
