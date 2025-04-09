@@ -14,7 +14,7 @@ import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomiz
 import DirectionsCarRoundedIcon from "@mui/icons-material/DirectionsCarRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { Divider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 const mainListItems = [
   {
@@ -74,7 +74,8 @@ export default function MenuContent() {
       <List dense>
         {mainListItems.slice(0, 3).map((item, index) => (
           <ListItem key={index} disablePadding>
-            <Link href={item.link} passHref legacyBehavior>
+            {item.link && (
+                        <Link href={item.link} passHref legacyBehavior>
               <ListItemButton
                 component="a"
                 onClick={() => handleListItemClick(index)}
@@ -116,6 +117,8 @@ export default function MenuContent() {
                 />
               </ListItemButton>
             </Link>
+              )
+            }
           </ListItem>
         ))}
       </List>

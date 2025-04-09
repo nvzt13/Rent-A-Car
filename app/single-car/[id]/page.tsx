@@ -1,6 +1,12 @@
 import React from 'react'
 import SingleCarClient from './SingleCarClient'
-const page = async ({params}) => {
+
+
+interface Params {
+  id: string;
+}
+
+const page = async ({ params }: { params: Promise<Params> }) => {
   const  resolveParams = await params;
   const {id} = resolveParams
 

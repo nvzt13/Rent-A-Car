@@ -12,6 +12,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const decoded = jwt.verify(token, 'SECRET_KEY');
     return res.status(200).json({ decoded });
   } catch (error) {
+    console.log(error)
     return res.status(401).json({ message: 'Invalid token' });
   }
 }

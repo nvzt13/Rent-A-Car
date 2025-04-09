@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from "@/lib/prisma";
-import { Black_And_White_Picture } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs';
 
@@ -39,7 +38,7 @@ export async function GET(
             const rentalEnd = new Date(rental.returnDate);
             const blockedDays = [];
 
-            let currentDate = new Date(rentalStart);
+            const currentDate = new Date(rentalStart);
             while (currentDate <= rentalEnd) {
               blockedDays.push(currentDate.toISOString().split("T")[0]);
               currentDate.setDate(currentDate.getDate() + 1);
@@ -130,7 +129,8 @@ export async function GET(
         });
 
         const data = Array.from(statsMap.values()).sort((a, b) => {
-          return new Date(`${a.year}-${a.month}`) - new Date(`${b.year}-${b.month}`);
+          return new Date(`${a.year}-${a.month}`).getTime() - new
+          Date(`${b.year}-${b.month}`).getTime();
         });
 
         return NextResponse.json(
@@ -292,7 +292,7 @@ export async function POST(
           },
         });
         return NextResponse.json(
-          { message: "Randevu olusturuldu" },
+          { message: "Randevu olusturuldu", createRental },
           { status: 201 }
         );
       } catch (error) {

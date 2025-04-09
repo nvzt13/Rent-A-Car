@@ -22,16 +22,15 @@ import {
   InputLabel,
 } from "@mui/material";
 import {
-  AiOutlineCheckCircle,
   AiOutlineDelete,
   AiOutlineLoading3Quarters,
-  AiOutlineArrowLeft,
   AiOutlineEdit,
 } from "react-icons/ai";
 import { deleteRental, updateRental } from "@/lib/slice/rentalSlice";
 
 const RentalClient = () => {
   const [loadingAprove, setLoadingAprove] = useState<{ [key: number]: boolean }>({});
+  console.log(setLoadingAprove)
   const [filter, setFilter] = useState<"all" | "approved" | "unapproved">("all");
   const [selectedCarId, setSelectedCarId] = useState<string>("all");
   const [open, setOpen] = useState(false);
@@ -50,7 +49,7 @@ const RentalClient = () => {
       filter === "approved" ? rental.isAprove :
       filter === "unapproved" ? !rental.isAprove : true;
 
-    const carFilter = selectedCarId === "all" ? true : rental.carId === selectedCarId;
+    const carFilter = selectedCarId === "all" ? true : rental.carId === Number(selectedCarId);
 
     return statusFilter && carFilter;
   });

@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Car } from '@prisma/client';
 import { RootState } from '@/lib/store';
-
+import { SelectChangeEvent } from '@mui/material';
 interface RentalClientProps {
   id: number;
 }
@@ -55,6 +55,14 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
     return blockDays?.includes(formattedDate);
   };
 
+
+const handleSelectChange = (event: SelectChangeEvent<number>) => {
+  const { name, value } = event.target;
+  setFormData({
+    ...formData,
+    [name]: Number(value), // çünkü id sayısal
+  });
+};
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
@@ -156,7 +164,7 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
           labelId="car-select-label"
           name="carId"
           value={formData.carId}
-          onChange={handleChange}
+          onChange={handleSelectChange}
         >
           {cars.map((car: Car) => (
             <MenuItem key={car.id} value={car.id}>

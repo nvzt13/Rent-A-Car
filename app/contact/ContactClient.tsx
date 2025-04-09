@@ -34,6 +34,7 @@ export default function ContactPage() {
         setStatus("Gönderim başarısız. Lütfen tekrar deneyin.");
       }
     } catch (error) {
+      console.log(error)
       setStatus("Bir hata oluştu.");
     }
   };

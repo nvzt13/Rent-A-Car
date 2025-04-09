@@ -10,3 +10,9 @@ export interface CreateCar {
   endDate?:   Date;  
   image:     string;
 }
+export interface MonthlyReport {
+  month: string;
+  year: number;
+  totalIncome: number;
+  totalRentals: number;
+}

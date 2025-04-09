@@ -6,6 +6,7 @@ const page = () => {
     <div>
         <SigninClient />
     </div>
+    
   )
 }
 

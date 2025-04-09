@@ -12,12 +12,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Rental, Car } from "@prisma/client";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import { updateRentalWithData } from "@/lib/slice/rentalSlice"; // Güncelleme action'ı
+import { updateRental } from "@/lib/slice/rentalSlice";
 
 interface RentalFormDialogProps {
   open: boolean;
@@ -44,7 +45,7 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
       setFormData({
         customerName: selectedRental.customerName,
         phoneNumber: selectedRental.phoneNumber || "",
-        carId: selectedRental.carId,
+        carId: selectedRental.carId.toString(),
         takeHour: selectedRental.takeHour || "10:00",
       });
       setStartDate(new Date(selectedRental.rentalDate));
@@ -52,7 +53,9 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
     }
   }, [selectedRental]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }> | SelectChangeEvent<string>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -60,18 +63,13 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
     }));
   };
 
-  const isDateBlocked = (date: Date) => false; // Gerekirse tarih kısıtlama eklenir
+  const isDateBlocked = (date: Date) => console.log(date);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRental || !startDate || !endDate) return;
 
-    dispatch(updateRentalWithData({
-      id: selectedRental.id,
-      ...formData,
-      rentalDate: startDate.toISOString(),
-      returnDate: endDate.toISOString(),
-    }));
+    dispatch(updateRental(6));
 
     onClose();
   };
@@ -85,14 +83,14 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
           onSubmit={handleSubmit}
           sx={{
             maxWidth: 800,
-            margin: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
             p: 2,
             boxShadow: 3,
             borderRadius: 2,
-            backgroundColor: 'white',
+            backgroundColor: "white",
           }}
         >
           <Typography variant="h5" align="center" gutterBottom>

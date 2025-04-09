@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import CarCard from "@/app/_components/Card";
 import Skeleton from "@mui/material/Skeleton";
 import { useAppSelector } from "@/lib/hooks";
@@ -10,42 +10,6 @@ import { Car } from "@prisma/client";
 const PageClient = () => {
   const cars = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.cars);
   const loading = useAppSelector((state: { cars: { cars: Car[], loading: boolean } }) => state.cars.loading);
-  
-  useEffect(() => {
-    const data = {
-      id: 578,
-      name: "admin",
-      password: "1234"
-    }
- const addAdmin = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const res = await fetch('/api/v1/admin', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: "admin",
-        password: "1234"
-      })
-    });
-    
-    if (res.ok) {
-      alert("Admin eklendi");
-    } else {
-      // Hata mesajını json olarak alalım
-      const errorData = await res.json(); // JSON yanıtı bekliyoruz
-      alert("Olumsuz");
-      console.log("Hata Mesajı:", errorData.message || errorData); // Gelen hata mesajını yazdır
-    }
-  } catch (error) {
-    console.log("Beklenmeyen Hata:", error); // Eğer fetch atarken bir hata olursa burada yakalarız
-  }
-}
- 
-  }, [])
   
   return (
     <div style={{ backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}>

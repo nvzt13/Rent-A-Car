@@ -23,13 +23,13 @@ const getChipColor = (model: string) => {
   }
 };
 
-const SingleCarClient = ({ id }: { id: number }) => {
+const SingleCarClient = ({ id }: { id: string }) => {
   const cars = useAppSelector((state: { cars: { cars: Car[] } }) => state.cars.cars);
   const [car, setCar] = useState<Car | null>(null);
 
   useEffect(() => {
     if (id && cars.length > 0) {
-      const selectedCar = cars.find((car) => car.id == id);
+      const selectedCar = cars.find((car) => car.id == Number(id));
       setCar(selectedCar || null);
     }
   }, [id, cars]);

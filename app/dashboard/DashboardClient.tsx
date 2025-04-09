@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import MonthlyReport from "@/type/types";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import {
   BarChart,
@@ -55,7 +56,7 @@ const DashboardClient = () => {
       try {
         const res = await fetch("/api/v1/statistics");
         const data = await res.json();
-        const formatted = data?.data?.map((item: any) => ({
+        const formatted = data?.data?.map((item: MonthlyReport) => ({
           month: `${item.month} ${item.year}`,
           revenue: item.totalIncome,
           rentals: item.totalRentals,

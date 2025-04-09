@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Rental } from "@prisma/client";
 import { Box, Typography } from "@mui/material";
-import { DateRangePicker } from "react-date-range";
+import { DateRangePicker, RangeKeyDict } from "react-date-range";
 import { useState, useEffect } from "react";
 import "react-date-range/dist/styles.css"; // stil dosyasını dahil et
 import "react-date-range/dist/theme/default.css"; // tema stil dosyasını dahil et
@@ -10,8 +10,14 @@ type Props = {
   rental: Rental | null;
 };
 
+type SelectionRange = {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+};
+
 export default function DateInput({ rental }: Props) {
-  const [state, setState] = useState([
+  const [state, setState] = useState<SelectionRange[]>([
     {
       startDate: rental ? new Date(rental.rentalDate) : new Date(),
       endDate: rental ? new Date(rental.returnDate) : new Date(),
@@ -41,7 +47,7 @@ export default function DateInput({ rental }: Props) {
       <Box sx={{ width: "100%" }}>
         <DateRangePicker
           ranges={state}
-          onChange={(item: any) =>
+          onChange={(item: RangeKeyDict) =>
             setState([
               {
                 ...item.selection,
