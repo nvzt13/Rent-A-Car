@@ -32,8 +32,8 @@ const AddCar = () => {
     gear: parseCarToBeUpdated?.gear || "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fuelTypes = ["Benzin", "Diesel", "Electric", "Hybrid"];
-  const gear = ["Manel", "Otomatik"];
+  const fuelTypes = ["Benzin", "Diesel", "Electrik", "Hibrit"];
+  const gear = ["Manuel", "Otomatik"];
   const carModel = ["Premium", "Ekonomi", "Suv"];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

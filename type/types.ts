@@ -1,3 +1,5 @@
+import { Car, Rental } from "@prisma/client";
+
 export interface CreateCar {
   name:      string;
   carModel:  string;
@@ -15,4 +17,15 @@ export interface MonthlyReport {
   year: number;
   totalIncome: number;
   totalRentals: number;
+}
+
+// State type
+export interface CarState {
+  cars: Car[];
+  loading: boolean;
+}
+
+export interface RentalState {
+  rentals: Rental[];
+  loadingRental: boolean;
 }

@@ -1,4 +1,4 @@
-import PageClient from "@/app/_components/PageClient";
+import PageClient from "@/app/PageClient";
 import FloatingWhatsAppButton from "@/app/_components/Whatsap";
 
 export default function Home() {
@@ -9,6 +9,3 @@ export default function Home() {
     </div>
   );
 }
-/*
-
-*/

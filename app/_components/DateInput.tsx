@@ -50,7 +50,9 @@ export default function DateInput({ rental }: Props) {
           onChange={(item: RangeKeyDict) =>
             setState([
               {
-                ...item.selection,
+                startDate: item.selection.startDate || new Date(),
+                endDate: item.selection.endDate || new Date(),
+                key: item.selection.key || "selection",
               },
             ])
           }

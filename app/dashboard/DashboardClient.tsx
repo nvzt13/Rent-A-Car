@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import MonthlyReport from "@/type/types";
+import {MonthlyReport} from "@/type/types";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import {
   BarChart,

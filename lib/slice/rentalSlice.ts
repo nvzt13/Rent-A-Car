@@ -1,10 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Rental } from '@prisma/client';
+import { RentalState } from '@/type/types';
 
-interface RentalState {
-  rentals: Rental[];
-  loadingRental: boolean;
-}
+
 const initialState: RentalState = {
   rentals: [],
   loadingRental: false,

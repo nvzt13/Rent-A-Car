@@ -33,7 +33,7 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
   const [formData, setFormData] = useState({
     customerName: "",
     phoneNumber: "",
-    carId: "",
+    carId: 0,
     takeHour: "10:00",
   });
 
@@ -45,7 +45,7 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
       setFormData({
         customerName: selectedRental.customerName,
         phoneNumber: selectedRental.phoneNumber || "",
-        carId: selectedRental.carId.toString(),
+        carId: selectedRental.carId,
         takeHour: selectedRental.takeHour || "10:00",
       });
       setStartDate(new Date(selectedRental.rentalDate));
@@ -63,7 +63,10 @@ const RentalFormDialog = ({ open, onClose, selectedRental }: RentalFormDialogPro
     }));
   };
 
-  const isDateBlocked = (date: Date) => console.log(date);
+  const isDateBlocked = (date: Date) => {
+    console.log(date);
+    return false; // Replace with actual logic to determine if the date is blocked
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
