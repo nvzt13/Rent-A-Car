@@ -7,16 +7,14 @@ import { FaSpinner } from "react-icons/fa";
 import { CarState } from "@/type/types";
 
 const PageClient = () => {
-  const [mounted, setMounted] = useState(false);
   const cars = useAppSelector(
     (state:{ cars: CarState}) => state.cars.cars
   );
-
-useEffect(() => {
-  setMounted(true);
-}, []);
-
-if (!mounted) {
+const loading = useAppSelector(
+    (state:{ cars: CarState}) => state.cars.loading
+  );
+  
+if (loading) {
   return (
     <div className='flex items-center justify-center w-full h-screen'>
       <FaSpinner className='animate-spin text-4xl' />

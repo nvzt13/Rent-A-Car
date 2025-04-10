@@ -4,7 +4,7 @@ import { RentalState } from '@/type/types';
 
 const initialState: RentalState = {
   rentals: [],
-  loadingRental: false,
+  loadingRental: true,
 };
 
 // Rentals Fetch Async Thunk

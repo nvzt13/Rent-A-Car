@@ -6,7 +6,8 @@ import { CarState } from "@/type/types";
 // Initial state
 const initialState: CarState = {
   cars: [],
-  loading: false,
+  // hydrasyon hatasina yol acmamasi icin true
+  loading: true,
 };
 
 // Fetch cars

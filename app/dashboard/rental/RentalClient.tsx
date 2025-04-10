@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { FaSpinner } from "react-icons/fa";
 import { Rental, Car } from "@prisma/client";
 import {
   IconButton,
@@ -59,7 +60,13 @@ const RentalClient = () => {
     console.log("Düzenle");
     setIsEditing(true);
   };
-
+if(loading){
+  return (
+    <div className='flex items-center justify-center w-full h-screen'>
+      <FaSpinner className='animate-spin text-4xl' />
+    </div>
+  );
+}
   return (
     <Box sx={{ width: "100%", padding: 2 }}>
       <Box

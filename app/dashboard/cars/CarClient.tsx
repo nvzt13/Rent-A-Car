@@ -13,6 +13,7 @@ import { Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAppSelector } from "@/lib/hooks";
 import { useGridColumns } from "../_components/gridData";
+import BasicDateCalendar from "./ResponsiveDateRangePickers";
 
 
 export default function Dashboard() {
@@ -62,6 +63,7 @@ export default function Dashboard() {
                 }}
               />
             </div>
+            <BasicDateCalendar />
             <Button
               variant="contained"
               color="primary"
