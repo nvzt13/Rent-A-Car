@@ -13,19 +13,17 @@ import { Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAppSelector } from "@/lib/hooks";
 import { useGridColumns } from "../_components/gridData";
-import BasicDateCalendar from "./ResponsiveDateRangePickers";
-
 
 export default function Dashboard() {
   const router = useRouter();
 
   // Yeni Araba Ekleme Butonu Fonksiyonu
   const handleAddCarClick = () => {
-    router.push("/dashboard/add-car"); // Yeni araba sayfasına yönlendir
+    router.push("/dashboard/cars/form"); // Yeni araba sayfasına yönlendir
   };
 
   const cars = useAppSelector((state) => state.cars.cars);
-  console.log(cars)
+  console.log(cars);
   const columns = useGridColumns();
   return (
     <div>
@@ -39,9 +37,23 @@ export default function Dashboard() {
             overflow: "auto",
           }}
         >
-          <Typography variant="h4" gutterBottom>
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{
+              textAlign: "center", // Ortalamak için
+              fontWeight: "bold", // Daha belirgin yapmak için
+              fontSize: "2rem", // Yazı boyutunu artırarak daha büyük hale getirebiliriz
+              color: "primary.main", // Temaya bağlı renk ekleyebiliriz
+              textTransform: "uppercase", // Başlığı büyük harflerle yazabiliriz
+              borderBottom: "2px solid", // Başlık altına ince bir çizgi eklemek için
+              paddingBottom: 1, // Başlık altına biraz boşluk eklemek için
+              marginTop: 5, // Başlık üstüne biraz boşluk eklemek için  
+            }}
+          >
             Arabalar
           </Typography>
+
           <Stack
             spacing={2}
             sx={{
@@ -51,7 +63,22 @@ export default function Dashboard() {
               mt: { xs: 8, md: 0 },
             }}
           >
-            <div style={{ width: "100%" }}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleRoundedIcon />}
+                onClick={handleAddCarClick}
+                sx={{ width: "200px", mb: 2, mt:4, marginLeft: "auto" }} // Butonu sağa hizalamak için marginLeft kullanıldı
+              >
+                Yeni Araba Ekle
+              </Button>
               <DataGrid
                 rows={cars}
                 columns={columns}
@@ -63,16 +90,6 @@ export default function Dashboard() {
                 }}
               />
             </div>
-            <BasicDateCalendar />
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddCircleRoundedIcon />}
-              onClick={handleAddCarClick}
-              sx={{ width: "200px", mb: 4 }}
-            >
-              Yeni Araba Ekle
-            </Button>
           </Stack>
         </Box>
       </Box>

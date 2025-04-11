@@ -197,7 +197,6 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
         minDate={startDate || new Date()}
         filterDate={(date) => !isDateBlocked(date)}
       />
-
       <Button variant="contained" color="primary" type="submit">
         Submit
       </Button>

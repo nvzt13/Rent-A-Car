@@ -1,5 +1,5 @@
 import PageClient from "@/app/PageClient";
-import FloatingWhatsAppButton from "@/app/_components/Whatsap";
+import FloatingWhatsAppButton from "@/components/Whatsap";
 
 export default function Home() {
   return (

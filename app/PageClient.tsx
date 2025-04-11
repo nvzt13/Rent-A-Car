@@ -1,20 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import CarCard from "@/app/_components/Card";
+import CarCard from "@/components/Card";
 import { useAppSelector } from "@/lib/hooks";
 import { Grid2 } from "@mui/material";
 import { FaSpinner } from "react-icons/fa";
 import { CarState } from "@/type/types";
 
 const PageClient = () => {
+  const [mounted, setMounted] = useState(false);
   const cars = useAppSelector(
     (state:{ cars: CarState}) => state.cars.cars
   );
-const loading = useAppSelector(
-    (state:{ cars: CarState}) => state.cars.loading
-  );
-  
-if (loading) {
+
+useEffect(() => {
+  setMounted(true);
+}, []);
+
+if (!mounted) {
   return (
     <div className='flex items-center justify-center w-full h-screen'>
       <FaSpinner className='animate-spin text-4xl' />

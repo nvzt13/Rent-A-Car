@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { Rental } from "@prisma/client";
 import { Box, Typography } from "@mui/material";
@@ -16,7 +17,7 @@ type SelectionRange = {
   key: string;
 };
 
-export default function DateInput({ rental }: Props) {
+export default function DateRangePickerComponent({ rental }: Props) {
   const [state, setState] = useState<SelectionRange[]>([
     {
       startDate: rental ? new Date(rental.rentalDate) : new Date(),

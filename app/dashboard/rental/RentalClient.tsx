@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
@@ -22,9 +23,9 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import DateInput from "@/app/_components/DateInput";
 import { deleteRental } from "@/lib/slice/rentalSlice";
 import { RentalState } from "@/type/types";
+import Calender from "../_components/Calender";
 
 const RentalClient = () => {
   const [selectedCarId, setSelectedCarId] = useState<string>("all");
@@ -60,13 +61,45 @@ const RentalClient = () => {
     console.log("Düzenle");
     setIsEditing(true);
   };
-if(loading){
-  return (
-    <div className='flex items-center justify-center w-full h-screen'>
-      <FaSpinner className='animate-spin text-4xl' />
-    </div>
-  );
-}
+
+  const busyDates = useMemo(() => {
+    if (selectedRental) {
+      const start = new Date(selectedRental.rentalDate);
+      const end = new Date(selectedRental.returnDate);
+      const dates: string[] = [];
+      const current = new Date(start);
+
+      while (current <= end) {
+        dates.push(current.toISOString().split("T")[0]);
+        current.setDate(current.getDate() + 1);
+      }
+
+      return dates;
+    }
+
+    return filteredRentals.flatMap((rental) => {
+      const start = new Date(rental.rentalDate);
+      const end = new Date(rental.returnDate);
+      const dates: string[] = [];
+      const current = new Date(start);
+
+      while (current <= end) {
+        dates.push(current.toISOString().split("T")[0]);
+        current.setDate(current.getDate() + 1);
+      }
+
+      return dates;
+    });
+  }, [selectedRental, filteredRentals]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <FaSpinner className="animate-spin text-4xl" />
+      </div>
+    );
+  }
+
   return (
     <Box sx={{ width: "100%", padding: 2 }}>
       <Box
@@ -75,9 +108,24 @@ if(loading){
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h4" gutterBottom>
-          Randevular
-        </Typography>
+        <Box>
+        <Typography
+            variant="h4"
+            gutterBottom
+            sx={{
+              textAlign: "center", // Ortalamak için
+              fontWeight: "bold", // Daha belirgin yapmak için
+              fontSize: "2rem", // Yazı boyutunu artırarak daha büyük hale getirebiliriz
+              color: "primary.main", // Temaya bağlı renk ekleyebiliriz
+              textTransform: "uppercase", // Başlığı büyük harflerle yazabiliriz
+              borderBottom: "2px solid", // Başlık altına ince bir çizgi eklemek için
+              paddingBottom: 1, // Başlık altına biraz boşluk eklemek için
+              marginTop: 5, // Başlık üstüne biraz boşluk eklemek için  
+            }}
+          >
+            Randevu
+          </Typography>
+        </Box>
 
         <Box
           display="flex"
@@ -127,7 +175,7 @@ if(loading){
                   cursor: "pointer",
                   "&:hover": { backgroundColor: "#f5f5f5" },
                 }}
-                onClick={() => setSelectedRental(rental)} // Randevu seçildiğinde
+                onClick={() => setSelectedRental(rental)}
               >
                 <TableCell>{rental.customerName}</TableCell>
                 <TableCell>{rental.phoneNumber}</TableCell>
@@ -137,7 +185,7 @@ if(loading){
                       <span>
                         <IconButton
                           color="primary"
-                          onClick={handleEditClick} // Düzenleme tıklama
+                          onClick={handleEditClick}
                         >
                           <AiOutlineEdit />
                         </IconButton>
@@ -158,7 +206,11 @@ if(loading){
           </TableBody>
         </Table>
       </TableContainer>
-      <DateInput rental={selectedRental} />
+
+      {/* Takvim */}
+      <Box mt={4}>
+        <Calender busyDates={busyDates} />
+      </Box>
     </Box>
   );
 };

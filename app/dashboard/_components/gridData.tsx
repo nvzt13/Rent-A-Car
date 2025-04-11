@@ -4,6 +4,7 @@ import { GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // Import Calendar icon
 import { useRouter } from "next/navigation";
 import Chip from '@mui/material/Chip';
 
@@ -38,6 +39,10 @@ function GridActions({
   onDelete: (id: string) => void;
   loading: boolean; // Add loading state for individual rows
 }) {
+  const handleCalendarClick = () => {
+    console.log("hello"); // Log hello when calendar icon is clicked
+  };
+
   return (
     <>
       <IconButton onClick={() => onEdit(params.row as Car)} disabled={loading}>
@@ -45,6 +50,9 @@ function GridActions({
       </IconButton>
       <IconButton onClick={() => onDelete(params.row.id)} disabled={loading}>
         {loading ? <CircularProgress size={24} /> : <DeleteIcon />}
+      </IconButton>
+      <IconButton onClick={handleCalendarClick} disabled={loading}>
+        <CalendarTodayIcon />
       </IconButton>
     </>
   );
@@ -56,7 +64,7 @@ export function useGridActions() {
 
   const handleEdit = (car: Car) => {
     const encodeCar = encodeURIComponent(JSON.stringify(car));
-    router.push(`/dashboard/add-car?update-car=${encodeCar}`);
+    router.push(`/dashboard/cars/form?update-car=${encodeCar}`);
   };
 
   const handleDelete = async (id: string) => {
