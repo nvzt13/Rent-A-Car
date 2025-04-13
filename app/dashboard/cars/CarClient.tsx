@@ -48,7 +48,7 @@ export default function Dashboard() {
               textTransform: "uppercase", // Başlığı büyük harflerle yazabiliriz
               borderBottom: "2px solid", // Başlık altına ince bir çizgi eklemek için
               paddingBottom: 1, // Başlık altına biraz boşluk eklemek için
-              marginTop: 5, // Başlık üstüne biraz boşluk eklemek için  
+              marginTop: 5, // Başlık üstüne biraz boşluk eklemek için
             }}
           >
             Arabalar
@@ -75,7 +75,7 @@ export default function Dashboard() {
                 color="primary"
                 startIcon={<AddCircleRoundedIcon />}
                 onClick={handleAddCarClick}
-                sx={{ width: "200px", mb: 2, mt:4, marginLeft: "auto" }} // Butonu sağa hizalamak için marginLeft kullanıldı
+                sx={{ width: "200px", mb: 2, mt: 4, marginLeft: "auto" }} // Butonu sağa hizalamak için marginLeft kullanıldı
               >
                 Yeni Araba Ekle
               </Button>

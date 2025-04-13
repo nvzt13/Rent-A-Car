@@ -53,12 +53,10 @@ export default function MenuContent() {
       }
     }
   }, [pathname]);
-  
 
   const handleLogout = (index: number) => {
     setSelectedIndex(index);
-    document.cookie =
-      "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     router.push("/signin");
   };
 

@@ -126,7 +126,8 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        maxWidth: 800,
+        maxWidth: 700, // örnek olarak 1000 yaptık
+        width: '100%',  // ekran boyutuna uyumlu hale getirir
         margin: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -136,6 +137,7 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
         borderRadius: 2,
         backgroundColor: 'white',
       }}
+      
     >
       <Typography variant="h5" align="center" gutterBottom>
         Rent a Car Form
