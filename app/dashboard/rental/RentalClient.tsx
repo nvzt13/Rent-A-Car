@@ -1,35 +1,34 @@
 "use client";
+
 import React, { useState, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import { FaSpinner } from "react-icons/fa";
-import { Rental, Car } from "@prisma/client";
-import {
-  IconButton,
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-  Stack,
-  Tooltip,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
-} from "@mui/material";
 import { deleteRental } from "@/lib/slice/rentalSlice";
 import { RentalState } from "@/type/types";
+import { alpha } from "@mui/material/styles";
+import { Rental, Car } from "@prisma/client";
+import {
+  Box,
+  Stack,
+  Paper,
+  Table,
+  Select,
+  Button,
+  Dialog,
+  Tooltip,
+  MenuItem,
+  Typography,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableBody,
+  TableContainer,
+  IconButton,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { FaSpinner } from "react-icons/fa";
+
 import Calender from "../_components/Calender";
 import RentalDialog from "../_components/RentalDialog";
 
@@ -39,77 +38,46 @@ const RentalClient = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedRental, setEditedRental] = useState<Rental | null>(null);
 
-  const rawRentals = useAppSelector(
-    (state: { rentals: RentalState }) => state.rentals.rentals
-  );
-  const loading = useAppSelector(
-    (state: { rentals: RentalState }) => state.rentals.loadingRental
-  );
-  const rentals: Rental[] = Array.isArray(rawRentals)
-    ? rawRentals
-    : rawRentals
-    ? [rawRentals]
-    : [];
-
-  const cars = useAppSelector(
-    (state: { cars: { cars: Car[]; loading: boolean } }) => state.cars.cars
-  );
   const dispatch = useAppDispatch();
+  const rawRentals = useAppSelector((state: { rentals: RentalState }) => state.rentals.rentals);
+  const loading = useAppSelector((state: { rentals: RentalState }) => state.rentals.loadingRental);
+  const cars = useAppSelector((state: { cars: { cars: Car[]; loading: boolean } }) => state.cars.cars);
 
-  const filteredRentals = rentals.filter((rental: Rental) => {
-    const carFilter =
-      selectedCarId === "all"
-        ? true
-        : rental.carId?.toString() === selectedCarId.toString();
-    return carFilter;
-  });
+  const rentals: Rental[] = Array.isArray(rawRentals) ? rawRentals : rawRentals ? [rawRentals] : [];
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-    setEditedRental(selectedRental); // Düzenleme için seçili kiralama bilgilerini al
-  };
+  const today = new Date();
 
-  const handleSave = () => {
-    if (editedRental) {
-      // Burada düzenleme kaydetme işlemi yapılabilir
-      console.log("Düzenleme kaydedildi:", editedRental);
-      setIsEditing(false);
-    }
-  };
+  const filteredRentals = useMemo(() => {
+    return selectedCarId === "all"
+      ? rentals
+      : rentals.filter((rental) => rental.carId === selectedCarId);
+  }, [selectedCarId, rentals]);
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedRental(null);
-  };
+  const upcomingRentals = useMemo(() => {
+    return filteredRentals.filter((rental) => new Date(rental.rentalDate) >= today);
+  }, [filteredRentals]);
 
   const busyDates = useMemo(() => {
-    if (selectedRental) {
-      const start = new Date(selectedRental.rentalDate);
-      const end = new Date(selectedRental.returnDate);
+    const createDateRange = (start: Date, end: Date) => {
       const dates: string[] = [];
       const current = new Date(start);
-
       while (current <= end) {
         dates.push(current.toISOString().split("T")[0]);
         current.setDate(current.getDate() + 1);
       }
-
       return dates;
+    };
+
+    if (selectedRental) {
+      return createDateRange(
+        new Date(selectedRental.rentalDate),
+        new Date(selectedRental.returnDate)
+      );
     }
 
-    return filteredRentals.flatMap((rental) => {
-      const start = new Date(rental.rentalDate);
-      const end = new Date(rental.returnDate);
-      const dates: string[] = [];
-      const current = new Date(start);
-
-      while (current <= end) {
-        dates.push(current.toISOString().split("T")[0]);
-        current.setDate(current.getDate() + 1);
-      }
-
-      return dates;
-    });
+    return filteredRentals.flatMap((rental) =>
+      createDateRange(new Date(rental.rentalDate), new Date(rental.returnDate))
+    );
   }, [selectedRental, filteredRentals]);
 
   const rentalDays = selectedRental
@@ -124,6 +92,23 @@ const RentalClient = () => {
   const dailyPrice = selectedCar?.price || 0;
   const totalPrice = rentalDays * dailyPrice;
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditedRental(selectedRental);
+  };
+
+  const handleSave = () => {
+    if (editedRental) {
+      console.log("Düzenleme kaydedildi:", editedRental);
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedRental(null);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full h-screen">
@@ -133,7 +118,8 @@ const RentalClient = () => {
   }
 
   return (
-    <Box sx={{ width: "100%", padding: 2 }}>
+    <Box sx={{ width: "100%", padding: 2, backgroundColor: (theme) =>
+              alpha(theme.palette.background.default, 1) }}>
       <Typography
         variant="h4"
         gutterBottom
@@ -151,13 +137,8 @@ const RentalClient = () => {
         Randevu
       </Typography>
 
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <FormControl size="small" sx={{ minWidth: 200, marginRight: 2 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <FormControl size="small" sx={{ minWidth: 200 }}>
           <InputLabel id="car-filter-label">Araba</InputLabel>
           <Select
             labelId="car-filter-label"
@@ -178,45 +159,29 @@ const RentalClient = () => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: {
-            xs: "column",
-            md: "row",
-          },
-          alignItems: "stretch",
+          flexDirection: { xs: "column", md: "row" },
           gap: 2,
         }}
       >
-        <TableContainer
-          component={Paper}
-          sx={{
-            boxShadow: 3,
-            borderRadius: 2,
-            flex: {
-              xs: "none",
-              md: 2,
-            },
-            width: {
-              xs: "100%",
-              md: "auto",
-            },
-          }}
-        >
+        <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2, flex: 2 }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <Typography fontWeight="bold">Müşteri Adı</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontWeight="bold">Telefon</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography fontWeight="bold">İşlemler</Typography>
-                </TableCell>
+                <TableCell><Typography fontWeight="bold">Müşteri Adı</Typography></TableCell>
+                <TableCell><Typography fontWeight="bold">Telefon</Typography></TableCell>
+                <TableCell><Typography fontWeight="bold">Kalan Gün</Typography></TableCell>
+                <TableCell align="center"><Typography fontWeight="bold">İşlemler</Typography></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRentals.map((rental) => {
+              {upcomingRentals.map((rental) => {
+                const rentalDate = new Date(rental.rentalDate);
+                const daysLeft = Math.ceil((rentalDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+
+                let rowColor = "#e0e0e0";
+                if (daysLeft < 5) rowColor = "#ffebee";
+                else if (daysLeft < 10) rowColor = "#e3f2fd";
+
                 const isSelected = selectedRental?.id === rental.id;
 
                 return (
@@ -224,7 +189,7 @@ const RentalClient = () => {
                     key={rental.id}
                     sx={{
                       cursor: "pointer",
-                      backgroundColor: isSelected ? "#4b77de" : "inherit",
+                      backgroundColor: isSelected ? "#4b77de" : rowColor,
                       "& td": {
                         color: isSelected ? "#fff" : "inherit",
                       },
@@ -236,18 +201,13 @@ const RentalClient = () => {
                   >
                     <TableCell>{rental.customerName}</TableCell>
                     <TableCell>{rental.phoneNumber}</TableCell>
+                    <TableCell>{`${daysLeft} gün`}</TableCell>
                     <TableCell align="center">
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        justifyContent="center"
-                      >
+                      <Stack direction="row" spacing={1} justifyContent="center">
                         <Tooltip title="Düzenle">
                           <span>
                             <IconButton
-                              sx={{
-                                color: isSelected ? "#fff" : "primary.main",
-                              }}
+                              sx={{ color: isSelected ? "#fff" : "primary.main" }}
                               onClick={handleEditClick}
                             >
                               <AiOutlineEdit />
@@ -256,9 +216,7 @@ const RentalClient = () => {
                         </Tooltip>
                         <Tooltip title="Sil">
                           <IconButton
-                            sx={{
-                              color: isSelected ? "#fff" : "error.main",
-                            }}
+                            sx={{ color: isSelected ? "#fff" : "error.main" }}
                             onClick={() => dispatch(deleteRental(rental.id))}
                           >
                             <AiOutlineDelete />
@@ -276,19 +234,11 @@ const RentalClient = () => {
         <Box
           mt={{ xs: 2, md: 0 }}
           sx={{
-            flex: {
-              xs: "none",
-              md: 1,
-            },
+            flex: 1,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
             alignItems: "center",
             gap: 2,
-            width: {
-              xs: "100%",
-              md: "auto",
-            },
           }}
         >
           <Calender busyDates={busyDates} />
@@ -303,32 +253,15 @@ const RentalClient = () => {
                 width: "100%",
               }}
             >
-              <Typography variant="h6" gutterBottom>
-                Randevu Detayı
-              </Typography>
-              <Typography>
-                Kiralama Tarihi:{" "}
-                {new Date(selectedRental.rentalDate).toLocaleDateString()}
-              </Typography>
-              <Typography>
-                Teslim Tarihi:{" "}
-                {new Date(selectedRental.returnDate).toLocaleDateString()}
-              </Typography>
+              <Typography variant="h6" gutterBottom>Randevu Detayı</Typography>
+              <Typography>Kiralama Tarihi: {new Date(selectedRental.rentalDate).toLocaleDateString()}</Typography>
+              <Typography>Teslim Tarihi: {new Date(selectedRental.returnDate).toLocaleDateString()}</Typography>
               <Typography>Toplam Gün: {rentalDays}</Typography>
               <Typography>Günlük Ücret: {dailyPrice} ₺</Typography>
-              <Typography fontWeight="bold">
-                Toplam Ücret: {totalPrice} ₺
-              </Typography>
+              <Typography fontWeight="bold">Toplam Ücret: {totalPrice} ₺</Typography>
             </Box>
           )}
         </Box>
-        <RentalDialog
-          isEditing={isEditing}
-          handleCancel={handleCancel}
-          handleSave={handleSave}
-          editedRental={editedRental}
-          setEditedRental={setEditedRental}
-        />
       </Box>
     </Box>
   );
