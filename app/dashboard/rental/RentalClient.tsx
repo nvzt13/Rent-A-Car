@@ -12,8 +12,6 @@ import {
   Paper,
   Table,
   Select,
-  Button,
-  Dialog,
   Tooltip,
   MenuItem,
   Typography,
@@ -30,13 +28,10 @@ import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 
 import Calender from "../_components/Calender";
-import RentalDialog from "../_components/RentalDialog";
 
 const RentalClient = () => {
   const [selectedCarId, setSelectedCarId] = useState<string>("all");
   const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedRental, setEditedRental] = useState<Rental | null>(null);
 
   const dispatch = useAppDispatch();
   const rawRentals = useAppSelector((state: { rentals: RentalState }) => state.rentals.rentals);
@@ -92,22 +87,6 @@ const RentalClient = () => {
   const dailyPrice = selectedCar?.price || 0;
   const totalPrice = rentalDays * dailyPrice;
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-    setEditedRental(selectedRental);
-  };
-
-  const handleSave = () => {
-    if (editedRental) {
-      console.log("Düzenleme kaydedildi:", editedRental);
-      setIsEditing(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedRental(null);
-  };
 
   if (loading) {
     return (
@@ -204,16 +183,6 @@ const RentalClient = () => {
                     <TableCell>{`${daysLeft} gün`}</TableCell>
                     <TableCell align="center">
                       <Stack direction="row" spacing={1} justifyContent="center">
-                        <Tooltip title="Düzenle">
-                          <span>
-                            <IconButton
-                              sx={{ color: isSelected ? "#fff" : "primary.main" }}
-                              onClick={handleEditClick}
-                            >
-                              <AiOutlineEdit />
-                            </IconButton>
-                          </span>
-                        </Tooltip>
                         <Tooltip title="Sil">
                           <IconButton
                             sx={{ color: isSelected ? "#fff" : "error.main" }}
