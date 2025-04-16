@@ -11,7 +11,7 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded"; // Buto
 import { useRouter } from "next/navigation";
 import { Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useGridColumns } from "../_components/gridData";
 
 export default function Dashboard() {
@@ -23,8 +23,8 @@ export default function Dashboard() {
   };
 
   const cars = useAppSelector((state) => state.cars.cars);
-  console.log(cars);
-  const columns = useGridColumns();
+  const dispatch = useAppDispatch(); // Use dispatch in the component
+  const columns = useGridColumns(dispatch); // Pass dispatch to useGridColumns hook
   return (
     <div>
       <Box sx={{ display: "flex" }}>

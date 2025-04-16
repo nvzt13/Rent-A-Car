@@ -74,7 +74,7 @@ export default function SignIn () {
     if (token) {
       router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
   
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

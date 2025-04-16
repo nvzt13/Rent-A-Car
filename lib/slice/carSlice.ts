@@ -50,6 +50,23 @@ export const addCar = createAsyncThunk<Car | void, FormData>(
     }
   }
 );
+// Toggle car status
+export const toggleCarAvailability = createAsyncThunk<
+  Car,
+  { carId: string }
+>("cars/toggleCarAvailability", async ({ carId }, { dispatch }) => {
+  const response = await fetch(`/api/v1/car/${carId}/status`, {
+    method: "PATCH",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to toggle car availability");
+  }
+
+  const updatedCar = await response.json();
+  return updatedCar;
+});
+
 
 // Update car
 export const updateCar = createAsyncThunk<
@@ -107,7 +124,15 @@ const carSlice = createSlice({
         if (index !== -1) {
           state.cars[index] = action.payload;
         }
-      });
+      })
+      // Toggle car status
+      .addCase(toggleCarAvailability.fulfilled, (state, action) => {
+        const index = state.cars.findIndex((car) => car.id === action.payload.id);
+        if (index !== -1) {
+          state.cars[index] = action.payload;
+        }
+      })
+      
   },
 });
 

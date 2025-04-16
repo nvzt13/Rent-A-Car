@@ -47,14 +47,14 @@ const DashboardClient = () => {
   ];
 
   useEffect(() => {
-    setCarsLength(cars.length);
+    setCarsLength(cars.filter((car) => car.isAvailable === true).length);
     setWaitedRentals(rentals?.filter((rental) => rental.isAprove === false).length);
   }, [cars, rentals]);
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const res = await fetch("/api/v1/statistics");
+        const res = await fetch("/api/v1/statistic");
         const data = await res.json();
         const formatted = data?.data?.map((item: MonthlyReport) => ({
           month: `${item.month} ${item.year}`,
@@ -113,7 +113,7 @@ useEffect(() => {
         {/* Toplam Araba */}
         <Card sx={{ p: 2 }}>
           <Typography variant="subtitle2" color="textSecondary">
-            Toplam Araba
+            Aktif Araba
           </Typography>
           <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
             <Typography variant="h5" fontWeight="bold">

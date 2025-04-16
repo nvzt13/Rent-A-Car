@@ -1,33 +1,41 @@
-import * as React from "react";
-import CircularProgress from "@mui/material/CircularProgress"; // Import loading icon
 import { GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // Import Calendar icon
-import { useRouter } from "next/navigation";
-import Chip from '@mui/material/Chip';
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress"; 
+import { toggleCarAvailability } from "@/lib/slice/carSlice"; // Import the action
+import { useAppDispatch } from "@/lib/hooks";
+import React from "react";
 
-// Render status for boolean value
-function renderStatus(isAvailable: boolean) {
-  const color = isAvailable ? 'success' : 'error';  // Use 'success' for true (Aktif) and 'error' for false (Pasif)
+// renderStatus fonksiyonu
+function renderStatus(car: Car, onToggleStatus: (car: Car) => void) {
+  const isAvailable = car.isAvailable;
+  const color = isAvailable ? "success" : "error";
+  const label = isAvailable ? "Aktif" : "Pasif";
+
   return (
-    <Chip 
-      label={isAvailable ? 'Aktif' : 'Pasif'} 
-      color={color} 
-      size="small" 
-      sx={{ fontWeight: 'bold' }} // Text styling
-    />
+    <Button
+      variant="contained"
+      color={color}
+      size="small"
+      onClick={() => onToggleStatus(car)}
+      sx={{ fontWeight: "bold", textTransform: "none" }}
+    >
+      {label}
+    </Button>
   );
 }
 
+// Car arayüzü
 interface Car {
   id: string;
   name: string;
-  isAvailable: boolean; // Update to boolean
+  isAvailable: boolean;
   price: number;
 }
 
+// GridActions bileşeni
 function GridActions({
   params,
   onEdit,
@@ -37,12 +45,8 @@ function GridActions({
   params: GridCellParams;
   onEdit: (car: Car) => void;
   onDelete: (id: string) => void;
-  loading: boolean; // Add loading state for individual rows
+  loading: boolean;
 }) {
-  const handleCalendarClick = () => {
-    console.log("hello"); // Log hello when calendar icon is clicked
-  };
-
   return (
     <>
       <IconButton onClick={() => onEdit(params.row as Car)} disabled={loading}>
@@ -51,31 +55,28 @@ function GridActions({
       <IconButton onClick={() => onDelete(params.row.id)} disabled={loading}>
         {loading ? <CircularProgress size={24} /> : <DeleteIcon />}
       </IconButton>
-      <IconButton onClick={handleCalendarClick} disabled={loading}>
-        <CalendarTodayIcon />
-      </IconButton>
     </>
   );
 }
 
+// useGridActions custom hook
 export function useGridActions() {
-  const router = useRouter();
-  const [loadingRowId, setLoadingRowId] = React.useState<string | null>(null); // Track the ID of the loading row
+  const [loadingRowId, setLoadingRowId] = React.useState<string | null>(null);
 
   const handleEdit = (car: Car) => {
     const encodeCar = encodeURIComponent(JSON.stringify(car));
-    router.push(`/dashboard/cars/form?update-car=${encodeCar}`);
+    window.location.href = `/dashboard/cars/form?update-car=${encodeCar}`;
   };
 
   const handleDelete = async (id: string) => {
-    setLoadingRowId(id); // Set the loading row ID
+    setLoadingRowId(id);
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`/api/v1/car/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (response.ok) {
@@ -86,15 +87,20 @@ export function useGridActions() {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoadingRowId(null); // Reset loading state after the action is completed
+      setLoadingRowId(null);
     }
   };
 
   return { handleEdit, handleDelete, loadingRowId };
 }
 
-export function useGridColumns() {
+// useGridColumns custom hook
+export function useGridColumns(dispatch: ReturnType<typeof useAppDispatch>) {
   const { handleEdit, handleDelete, loadingRowId } = useGridActions();
+
+  const editCarStatus = (carId: string) => {
+    dispatch(toggleCarAvailability({ carId }));
+  };
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "Car Name", flex: 1, minWidth: 150 },
@@ -103,7 +109,8 @@ export function useGridColumns() {
       headerName: "Durum",
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => renderStatus(params.row.isAvailable), // Use renderStatus here with boolean value
+      renderCell: (params) =>
+        renderStatus(params.row as Car, (car) => editCarStatus(car.id)),
     },
     {
       field: "gear",
@@ -127,7 +134,7 @@ export function useGridColumns() {
           params={params}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          loading={loadingRowId === params.row.id} // Only show the loading icon for the current row
+          loading={loadingRowId === params.row.id}
         />
       ),
     },

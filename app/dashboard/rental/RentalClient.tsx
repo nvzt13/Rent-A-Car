@@ -1,8 +1,7 @@
 "use client";
-
 import React, { useState, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import { deleteRental } from "@/lib/slice/rentalSlice";
+import { deleteRental, updateRental } from "@/lib/slice/rentalSlice";
 import { RentalState } from "@/type/types";
 import { alpha } from "@mui/material/styles";
 import { Rental, Car } from "@prisma/client";
@@ -20,11 +19,10 @@ import {
   TableHead,
   TableBody,
   TableContainer,
-  IconButton,
   FormControl,
   InputLabel,
+  Button,
 } from "@mui/material";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 
 import Calender from "../_components/Calender";
@@ -34,24 +32,42 @@ const RentalClient = () => {
   const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
 
   const dispatch = useAppDispatch();
-  const rawRentals = useAppSelector((state: { rentals: RentalState }) => state.rentals.rentals);
-  const loading = useAppSelector((state: { rentals: RentalState }) => state.rentals.loadingRental);
-  const cars = useAppSelector((state: { cars: { cars: Car[]; loading: boolean } }) => state.cars.cars);
-
-  const rentals: Rental[] = Array.isArray(rawRentals) ? rawRentals : rawRentals ? [rawRentals] : [];
-
-  const today = new Date();
+  const rawRentals = useAppSelector(
+    (state: { rentals: RentalState }) => state.rentals.rentals
+  );
+  const rentals = useMemo(() => {
+    if (Array.isArray(rawRentals)) return rawRentals;
+    if (rawRentals) return [rawRentals];
+    return [];
+  }, [rawRentals]);
+  const loading = useAppSelector(
+    (state: { rentals: RentalState }) => state.rentals.loadingRental
+  );
+  const cars = useAppSelector(
+    (state: { cars: { cars: Car[]; loading: boolean } }) => state.cars.cars
+  );
 
   const filteredRentals = useMemo(() => {
     return selectedCarId === "all"
       ? rentals
-      : rentals.filter((rental) => rental.carId === selectedCarId);
+      : rentals.filter((rental) => rental.carId === Number(selectedCarId));
   }, [selectedCarId, rentals]);
 
-  const upcomingRentals = useMemo(() => {
-    return filteredRentals.filter((rental) => new Date(rental.rentalDate) >= today);
-  }, [filteredRentals]);
+  // Calculate today's date and upcoming rentals
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayDate = new Date().toISOString().split("T")[0];
 
+  const upcomingRentals = useMemo(() => {
+    return filteredRentals.filter((rental) => {
+      const rentalDate = new Date(rental.rentalDate)
+        .toISOString()
+        .split("T")[0];
+      return rentalDate >= todayDate;
+    });
+  }, [filteredRentals, todayDate]);
+
+  // Busy dates calculation
   const busyDates = useMemo(() => {
     const createDateRange = (start: Date, end: Date) => {
       const dates: string[] = [];
@@ -87,7 +103,6 @@ const RentalClient = () => {
   const dailyPrice = selectedCar?.price || 0;
   const totalPrice = rentalDays * dailyPrice;
 
-
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full h-screen">
@@ -97,8 +112,13 @@ const RentalClient = () => {
   }
 
   return (
-    <Box sx={{ width: "100%", padding: 2, backgroundColor: (theme) =>
-              alpha(theme.palette.background.default, 1) }}>
+    <Box
+      sx={{
+        width: "100%",
+        padding: 2,
+        backgroundColor: (theme) => alpha(theme.palette.background.default, 1),
+      }}
+    >
       <Typography
         variant="h4"
         gutterBottom
@@ -116,7 +136,12 @@ const RentalClient = () => {
         Randevu
       </Typography>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <FormControl size="small" sx={{ minWidth: 200 }}>
           <InputLabel id="car-filter-label">Araba</InputLabel>
           <Select
@@ -142,20 +167,33 @@ const RentalClient = () => {
           gap: 2,
         }}
       >
-        <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2, flex: 2 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ boxShadow: 3, borderRadius: 2, flex: 2 }}
+        >
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><Typography fontWeight="bold">Müşteri Adı</Typography></TableCell>
-                <TableCell><Typography fontWeight="bold">Telefon</Typography></TableCell>
-                <TableCell><Typography fontWeight="bold">Kalan Gün</Typography></TableCell>
-                <TableCell align="center"><Typography fontWeight="bold">İşlemler</Typography></TableCell>
+                <TableCell>
+                  <Typography fontWeight="bold">Müşteri Adı</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontWeight="bold">Telefon</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontWeight="bold">Kalan Gün</Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography fontWeight="bold">İşlemler</Typography>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {upcomingRentals.map((rental) => {
                 const rentalDate = new Date(rental.rentalDate);
-                const daysLeft = Math.ceil((rentalDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+                const daysLeft = Math.ceil(
+                  (rentalDate.getTime() - today.getTime()) / (1000 * 3600 * 24)
+                );
 
                 let rowColor = "#e0e0e0";
                 if (daysLeft < 5) rowColor = "#ffebee";
@@ -182,14 +220,51 @@ const RentalClient = () => {
                     <TableCell>{rental.phoneNumber}</TableCell>
                     <TableCell>{`${daysLeft} gün`}</TableCell>
                     <TableCell align="center">
-                      <Stack direction="row" spacing={1} justifyContent="center">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        justifyContent="center"
+                      >
+                        <Tooltip title="Onayla">
+                          {rental.isAprove ? (
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              size="small"
+                              onClick={() => {
+                                // Call updateRental with the necessary parameters
+                                dispatch(updateRental(rental.id));
+                              }}
+                            >
+                              Geri Al
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="contained"
+                              color="success"
+                              size="small"
+                              onClick={() => {
+                                // Call updateRental with the necessary parameters
+                                dispatch(updateRental(rental.id));
+                              }}
+                            >
+                              Onayla
+                            </Button>
+                          )}
+                        </Tooltip>
                         <Tooltip title="Sil">
-                          <IconButton
-                            sx={{ color: isSelected ? "#fff" : "error.main" }}
-                            onClick={() => dispatch(deleteRental(rental.id))}
+                          <Button
+                            variant="contained"
+                            color="error"
+                            size="small"
+                            onClick={() => {
+                              // Call updateRental with the necessary parameters
+                              dispatch(deleteRental(rental.id));
+                            }}
                           >
-                            <AiOutlineDelete />
-                          </IconButton>
+                            {" "}
+                            Sil
+                          </Button>
                         </Tooltip>
                       </Stack>
                     </TableCell>
@@ -210,7 +285,7 @@ const RentalClient = () => {
             gap: 2,
           }}
         >
-          <Calender busyDates={busyDates} />
+          <Calender busyDates={selectedRental ? busyDates : []} />
 
           {selectedRental && (
             <Box
@@ -222,12 +297,22 @@ const RentalClient = () => {
                 width: "100%",
               }}
             >
-              <Typography variant="h6" gutterBottom>Randevu Detayı</Typography>
-              <Typography>Kiralama Tarihi: {new Date(selectedRental.rentalDate).toLocaleDateString()}</Typography>
-              <Typography>Teslim Tarihi: {new Date(selectedRental.returnDate).toLocaleDateString()}</Typography>
+              <Typography variant="h6" gutterBottom>
+                Randevu Detayı
+              </Typography>
+              <Typography>
+                Kiralama Tarihi:{" "}
+                {new Date(selectedRental.rentalDate).toLocaleDateString()}
+              </Typography>
+              <Typography>
+                Teslim Tarihi:{" "}
+                {new Date(selectedRental.returnDate).toLocaleDateString()}
+              </Typography>
               <Typography>Toplam Gün: {rentalDays}</Typography>
               <Typography>Günlük Ücret: {dailyPrice} ₺</Typography>
-              <Typography fontWeight="bold">Toplam Ücret: {totalPrice} ₺</Typography>
+              <Typography fontWeight="bold">
+                Toplam Ücret: {totalPrice} ₺
+              </Typography>
             </Box>
           )}
         </Box>

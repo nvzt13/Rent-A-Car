@@ -15,5 +15,5 @@ export function middleware(request: NextRequest) {
 
 // Middleware'in çalışacağı yolları belirt
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboadrd/:path*'],
 };
