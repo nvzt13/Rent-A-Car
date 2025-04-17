@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 export async function GET(
   request: NextRequest,
@@ -89,84 +89,34 @@ export async function GET(
       } catch (error) {
         console.log(error);
       }
-
-    case "statistics":
+    case "visitor":
       try {
-        const rentals = await prisma.rental.findMany({
-          include: { car: true },
+        // Visitor satırı var mı? Yoksa oluştur
+        let visitor = await prisma.visitor.findFirst();
+
+        if (!visitor) {
+          visitor = await prisma.visitor.create({
+            data: { count: 1 },
+          });
+        } else {
+          visitor = await prisma.visitor.update({
+            where: { id: visitor.id },
+            data: { count: visitor.count + 1 },
+          });
+        }
+
+        return NextResponse.json({
+          message: "Ziyaretçi sayısı",
+          count: visitor.count,
         });
-
-        const statsMap = new Map();
-
-        rentals.forEach((rental) => {
-          if (!rental.isAprove) return;
-          const date = new Date(rental.rentalDate);
-          const month = date.getMonth(); // 0-11
-          const year = date.getFullYear();
-          const key = `${year}-${month}`;
-
-          if (!statsMap.has(key)) {
-            statsMap.set(key, {
-              month: new Date(year, month).toLocaleString("default", {
-                month: "long",
-              }),
-              year,
-              totalIncome: 0,
-              totalRentals: 0,
-            });
-          }
-
-          const entry = statsMap.get(key);
-          const rentalStart = new Date(rental.rentalDate);
-          const rentalEnd = new Date(rental.returnDate);
-          const daysRented = Math.ceil(
-            (rentalEnd.getTime() - rentalStart.getTime()) / (1000 * 3600 * 24) + 1
-          ); // Gün farkını al
-          
-          // Her kiralama için günlük ücret ile toplam geliri hesapla
-          entry.totalIncome += rental.car.price * daysRented; 
-          entry.totalRentals += 1;
-        });
-
-        const data = Array.from(statsMap.values()).sort((a, b) => {
-          return new Date(`${a.year}-${a.month}`).getTime() - new
-          Date(`${b.year}-${b.month}`).getTime();
-        });
-
-        return NextResponse.json(
-          { message: "Aylık gelir ve kiralama sayıları", data },
-          { status: 200 }
-        );
       } catch (error) {
-        console.error("Error fetching statistics:", error);
+        console.error("Ziyaretçi sayacı hatası:", error);
         return NextResponse.json(
-          { message: "İstatistikler alınamadı", error },
+          { message: "Sayaç hatası", error },
           { status: 500 }
         );
       }
-break
-case "visitor":
-  try {
-    // Visitor satırı var mı? Yoksa oluştur
-    let visitor = await prisma.visitor.findFirst();
 
-    if (!visitor) {
-      visitor = await prisma.visitor.create({
-        data: { count: 1 },
-      });
-    } else {
-      visitor = await prisma.visitor.update({
-        where: { id: visitor.id },
-        data: { count: visitor.count + 1 },
-      });
-    }
-
-    return NextResponse.json({ message: "Ziyaretçi sayısı", count: visitor.count });
-  } catch (error) {
-    console.error("Ziyaretçi sayacı hatası:", error);
-    return NextResponse.json({ message: "Sayaç hatası", error }, { status: 500 });
-  }
-  
     default:
       return NextResponse.json({ message: "Invalid slug" }, { status: 400 });
   }
@@ -302,26 +252,36 @@ export async function POST(
           { status: 500 }
         );
       }
-    break;
+      break;
     case "admin":
       try {
-        const body = await request.json()
-        const  { username, password} = body
-        const admin = await prisma.admin.findFirst({ where: { name: username} });
+        const body = await request.json();
+        const { username, password } = body;
+        const admin = await prisma.admin.findFirst({
+          where: { name: username },
+        });
 
-    if (!admin) {
-      return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
-    }
-    // Şifre kontrolü
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
-    if (!isPasswordValid) {
-      return NextResponse.json({ message: 'Invalid credentials' }, { status: 403 });
-    } 
-     if(admin && isPasswordValid){
-      const token = jwt.sign({ userId: admin.id }, 'SECRET_KEY', { expiresIn: '1h' });
+        if (!admin) {
+          return NextResponse.json(
+            { message: "Invalid credentials" },
+            { status: 401 }
+          );
+        }
+        // Şifre kontrolü
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
+        if (!isPasswordValid) {
+          return NextResponse.json(
+            { message: "Invalid credentials" },
+            { status: 403 }
+          );
+        }
+        if (admin && isPasswordValid) {
+          const token = jwt.sign({ userId: admin.id }, "SECRET_KEY", {
+            expiresIn: "1h",
+          });
 
-    return  NextResponse.json({ message: 'Login successful', token });
-     }
+          return NextResponse.json({ message: "Login successful", token });
+        }
       } catch (error) {
         console.log("Error in admin case:", error);
         return NextResponse.json(
@@ -511,5 +471,34 @@ export async function PUT(
       { message: "An error occurred during the update." },
       { status: 500 }
     );
+  }
+}
+
+export async function PATCH(
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+  const [carId] = slug;
+
+  try {
+    // Önce mevcut arabanın durumunu al
+    const car = await prisma.car.findUnique({
+      where: { id: Number(carId) },
+    });
+
+    if (!car) {
+      return new NextResponse("Car not found", { status: 404 });
+    }
+
+    // Durumu tersine çevir
+    const updatedCar = await prisma.car.update({
+      where: { id: Number(carId) },
+      data: { isAvailable: !car.isAvailable },
+    });
+
+    return NextResponse.json(updatedCar);
+  } catch (error) {
+    console.error("Toggle error:", error);
+    return new NextResponse("Failed to toggle availability", { status: 500 });
   }
 }

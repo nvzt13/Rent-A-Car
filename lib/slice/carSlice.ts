@@ -55,7 +55,7 @@ export const toggleCarAvailability = createAsyncThunk<
   Car,
   { carId: string }
 >("cars/toggleCarAvailability", async ({ carId }, { dispatch }) => {
-  const response = await fetch(`/api/v1/car/${carId}/status`, {
+  const response = await fetch(`/api/v1/car/${carId}`, {
     method: "PATCH",
   });
 

@@ -33,7 +33,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-  ],
+, "type/types.ts", "scripts/createAdmin.js"  ],
   "exclude": [
     "node_modules",
     ".next/types/**/*.ts"
