@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
 export async function GET(
   request: NextRequest,
@@ -13,6 +14,7 @@ export async function GET(
   switch (table) {
     case "car":
       if (table && id && query) {
+        
         const blockDays = await prisma.car.findFirst({
           where: { id: Number(id) },
           include: {
@@ -275,12 +277,22 @@ export async function POST(
             { status: 403 }
           );
         }
+
         if (admin && isPasswordValid) {
           const token = jwt.sign({ userId: admin.id }, "SECRET_KEY", {
             expiresIn: "1h",
           });
 
-          return NextResponse.json({ message: "Login successful", token });
+          const response = NextResponse.json({ message: "Login successful" });
+
+          response.headers.set(
+            "Set-Cookie",
+            `token=${token}; HttpOnly; Path=/; Max-Age=3600; SameSite=Strict${
+              process.env.NODE_ENV === "production" ? "; Secure" : ""
+            }`
+          );
+
+          return response;
         }
       } catch (error) {
         console.log("Error in admin case:", error);
@@ -475,6 +487,7 @@ export async function PUT(
 }
 
 export async function PATCH(
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
