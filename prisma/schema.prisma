@@ -21,7 +21,7 @@ model Car {
   gear        String
   image       String
   createdAt   DateTime? @default(now())
-  isAvailable Boolean   @default(true) // Eklenen alan
+  isAvailable Boolean   @default(true) 
 
   rentals     Rental[]
 }

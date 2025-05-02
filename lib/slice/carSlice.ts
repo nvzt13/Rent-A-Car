@@ -54,7 +54,7 @@ export const addCar = createAsyncThunk<Car | void, FormData>(
 export const toggleCarAvailability = createAsyncThunk<
   Car,
   { carId: string }
->("cars/toggleCarAvailability", async ({ carId }, { dispatch }) => {
+>("cars/toggleCarAvailability", async ({ carId }) => {
   const response = await fetch(`/api/v1/${carId}`, {
     method: "PATCH",
   });

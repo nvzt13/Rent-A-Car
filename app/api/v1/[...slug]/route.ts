@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
 
 export async function GET(
   request: NextRequest,

@@ -38,14 +38,25 @@ const AddCar = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
+  
     if (name === "image") {
+      // Google Drive dosya ID'sini al
+      const match = value.match(/\/d\/([^/]+)/);
+      const fileId = match?.[1];
+  
+      // Eğer Google Drive linkiyse, uc formatına çevir
+      const imageUrl = fileId
+        ? `https://drive.google.com/uc?export=view&id=${fileId}`
+        : value;
+  
+      // Veritabanına kaydedilecek veri
       setCarData({
         ...carData,
-        [name]: value,
+        image: imageUrl,
       });
-
-      setImagePreview(value);
+  
+      // Önizleme için gösterilecek görsel
+      setImagePreview(imageUrl);
     } else {
       setCarData({
         ...carData,
@@ -53,6 +64,7 @@ const AddCar = () => {
       });
     }
   };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
