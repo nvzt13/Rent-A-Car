@@ -1,12 +1,21 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { Button, Box, Typography, TextField, MenuItem, FormControl, Select, InputLabel } from '@mui/material';
-import { useSelector } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { Car } from '@prisma/client';
-import { RootState } from '@/lib/store';
-import { SelectChangeEvent } from '@mui/material';
+"use client";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Box,
+  Typography,
+  TextField,
+  MenuItem,
+  FormControl,
+  Select,
+  InputLabel,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Car } from "@prisma/client";
+import { RootState } from "@/lib/redux/store";
+import { SelectChangeEvent } from "@mui/material";
 interface RentalClientProps {
   id: number;
 }
@@ -15,11 +24,11 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
   const cars = useSelector((state: RootState) => state.cars.cars);
   const [blockDays, setBlockDays] = useState<string[]>([]);
   const [formData, setFormData] = useState({
-    customerName: '',
-    phoneNumber: '',
-    takeHour: '',
-    rentalDate: '',
-    returnDate: '',
+    customerName: "",
+    phoneNumber: "",
+    takeHour: "",
+    rentalDate: "",
+    returnDate: "",
     carId: id,
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -29,18 +38,21 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
   useEffect(() => {
     const fetchBlockDate = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`/api/v1/car/${formData.carId}/block-date`,{
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `/api/v1/car/${formData.carId}/block-date`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         if (response.ok) {
           const data = await response.json();
           setBlockDays(data.blockDays);
         } else {
-          console.log('İşlem başarısız!');
+          console.log("İşlem başarısız!");
         }
       } catch (error) {
         console.log(error);
@@ -51,18 +63,17 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
 
   // Function to check if a date is blocked
   const isDateBlocked = (date: Date): boolean => {
-    const formattedDate = date.toISOString().split('T')[0];
+    const formattedDate = date.toISOString().split("T")[0];
     return blockDays?.includes(formattedDate);
   };
 
-
-const handleSelectChange = (event: SelectChangeEvent<number>) => {
-  const { name, value } = event.target;
-  setFormData({
-    ...formData,
-    [name]: Number(value), // çünkü id sayısal
-  });
-};
+  const handleSelectChange = (event: SelectChangeEvent<number>) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: Number(value), // çünkü id sayısal
+    });
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
@@ -74,15 +85,15 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!startDate || !endDate) {
-      alert('Lütfen tarihleri seçiniz.');
+      alert("Lütfen tarihleri seçiniz.");
       return;
     }
 
-    const rentalDate = startDate.toISOString().split('T')[0];
-    const returnDate = endDate.toISOString().split('T')[0];
+    const rentalDate = startDate.toISOString().split("T")[0];
+    const returnDate = endDate.toISOString().split("T")[0];
 
     if (isDateBlocked(startDate) || isDateBlocked(endDate)) {
-      alert('Seçtiğiniz tarihler dolu. Lütfen başka tarihler seçin.');
+      alert("Seçtiğiniz tarihler dolu. Lütfen başka tarihler seçin.");
       return;
     }
 
@@ -93,32 +104,32 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
     };
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/v1/rental', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/v2/rental", {
+        method: "POST",
         body: JSON.stringify(formDataToSubmit),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (response.ok) {
-        alert('Randevu oluşturuldu');
+        alert("Randevu oluşturuldu");
         setFormData({
-          customerName: '',
-          phoneNumber: '',
-          takeHour: '',
-          rentalDate: '',
-          returnDate: '',
+          customerName: "",
+          phoneNumber: "",
+          takeHour: "",
+          rentalDate: "",
+          returnDate: "",
           carId: id,
-        })
+        });
       } else {
-        alert('Randevu oluşturulamadı');
+        alert("Randevu oluşturulamadı");
       }
     } catch (error) {
       console.error(error);
     }
-    console.log('Rental Form Data:', formDataToSubmit);
+    console.log("Rental Form Data:", formDataToSubmit);
   };
 
   return (
@@ -127,17 +138,16 @@ const handleSelectChange = (event: SelectChangeEvent<number>) => {
       onSubmit={handleSubmit}
       sx={{
         maxWidth: 700, // örnek olarak 1000 yaptık
-        width: '100%',  // ekran boyutuna uyumlu hale getirir
-        margin: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100%", // ekran boyutuna uyumlu hale getirir
+        margin: "auto",
+        display: "flex",
+        flexDirection: "column",
         gap: 2,
         p: 2,
         boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: 'white',
+        backgroundColor: "white",
       }}
-      
     >
       <Typography variant="h5" align="center" gutterBottom>
         Rent a Car Form

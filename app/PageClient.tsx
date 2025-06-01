@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CarCard from "@/components/Card";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { Grid2 } from "@mui/material";
 import { FaSpinner } from "react-icons/fa";
 import { CarState } from "@/type/types";

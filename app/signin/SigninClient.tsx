@@ -76,48 +76,74 @@ export default function SignIn () {
     }
   }, [router]);
   
+  const egzistingAdmin = async () => {
+    try {
+      const response = await fetch("/api/v2/admin", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-
-  const isValid = validateInputs();
-  if (!isValid) return;
-
-  setLoading(true);
-  const data = new FormData(event.currentTarget);
-  const username = data.get("username");
-  const password = data.get("password");
-
-  try {
-    const response = await fetch(`/api/v1/admin`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const token = data.token;
-
-      // JWT'yi tarayıcıda cookie'ye ekleyelim
-      document.cookie = `token=${token}; path=/;`;  // Tarayıcıda cookie oluşturuluyor
-
-      // Başarılı giriş sonrası dashboard sayfasına yönlendir
-      router.push(`/dashboard`);
-    } else {
-      setSnackbarMessage("Kullanıcı adı veya şifre hatalı!");
-      setOpenSnackbar(true);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Existing admin data:", data);
+        return data.exists; // Assuming the API returns an object with an 'exists' property
+      } else {
+        console.error("Failed to check existing admin:", response.statusText);
+        return false;
+      }
     }
-  } catch (error) {
-    console.log(error);
-    setSnackbarMessage("Bir hata oluştu, lütfen tekrar deneyin.");
-    setOpenSnackbar(true);
-  } finally {
-    setLoading(false);
+    catch (error) {
+      console.error("Error checking existing admin:", error);
+      return false;
+    }
   }
-};
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    const isValid = validateInputs();
+    if (!isValid) return;
+  
+    setLoading(true);
+    const data = new FormData(event.currentTarget);
+    const name = data.get("username");
+    const password = data.get("password");
+  
+    try {
+      // Önce admin olup olmadığını kontrol et
+      const adminExists = await egzistingAdmin();
+      console.log("Admin exists:", adminExists);
+      // Doğru endpoint'i seç
+      const endpoint = adminExists ? "login" : "register";
+  
+      const response = await fetch(`/api/v2/admin/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const token = data.token;
+  
+        document.cookie = `token=${token}; path=/;`;
+        router.push(`/dashboard`);
+      } else {
+        setSnackbarMessage("Kullanıcı adı veya şifre hatalı!");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setSnackbarMessage("Bir hata oluştu, lütfen tekrar deneyin.");
+      setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
  
   const validateInputs = () => {
     const username = document.getElementById("username") as HTMLInputElement;

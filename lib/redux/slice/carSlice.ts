@@ -13,7 +13,7 @@ const initialState: CarState = {
 // Fetch cars
 export const fetchCars = createAsyncThunk("cars/fetchCars", async () => {
   try {
-    const response = await fetch("/api/v1/car");
+    const response = await fetch("/api/v2/cars");
     if (response.ok) {
       const carsData = await response.json();
       return carsData.data; // Dönen veri carsData.data
@@ -32,7 +32,7 @@ export const addCar = createAsyncThunk<Car | void, FormData>(
   "cars/addCar",
   async (carData: FormData, { dispatch }) => {
     try {
-      const response = await fetch("/api/v1/car", {
+      const response = await fetch("/api/v2/cars", {
         method: "POST",
         body: carData,
       });
@@ -73,7 +73,7 @@ export const updateCar = createAsyncThunk<
   Car,
   { carId: string; carData: FormData }
 >("cars/updateCar", async ({ carId, carData }, { dispatch }) => {
-  const response = await fetch(`/api/v1/car/${carId}`, {
+  const response = await fetch(`/api/v2/cars/${carId}`, {
     method: "PUT",
     body: carData,
   });

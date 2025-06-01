@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {MonthlyReport} from "@/type/types";
+import { MonthlyReport } from "@/type/types";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import {
   BarChart,
@@ -21,7 +21,7 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import DirectionsCarRoundedIcon from "@mui/icons-material/DirectionsCarRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
@@ -48,7 +48,9 @@ const DashboardClient = () => {
 
   useEffect(() => {
     setCarsLength(cars.filter((car) => car.isAvailable === true).length);
-    setWaitedRentals(rentals?.filter((rental) => rental.isAprove === false).length);
+    setWaitedRentals(
+      rentals?.filter((rental) => rental.isAprove === false).length
+    );
   }, [cars, rentals]);
 
   useEffect(() => {
@@ -72,13 +74,13 @@ const DashboardClient = () => {
 
   const latestRevenue =
     rentalData?.length > 0 ? rentalData[rentalData.length - 1].revenue : 0;
-useEffect(() => {
-  fetch("/api/v1/visitor")
-    .then((res) => res.json())
-    .then((data) => {
-      setVisitorCounter(data.count)
-    });
-}, []);
+  useEffect(() => {
+    fetch("/api/v1/visitor")
+      .then((res) => res.json())
+      .then((data) => {
+        setVisitorCounter(data.count);
+      });
+  }, []);
   return (
     <div
       style={{
@@ -102,7 +104,12 @@ useEffect(() => {
           <Typography variant="subtitle2" color="textSecondary">
             Aylık Ziyaretçi
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mt={1}
+          >
             <Typography variant="h5" fontWeight="bold">
               {visitorCounter}
             </Typography>
@@ -115,7 +122,12 @@ useEffect(() => {
           <Typography variant="subtitle2" color="textSecondary">
             Aktif Araba
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mt={1}
+          >
             <Typography variant="h5" fontWeight="bold">
               {carsLength}
             </Typography>
@@ -128,7 +140,12 @@ useEffect(() => {
           <Typography variant="subtitle2" color="textSecondary">
             Bekleyen Randevu
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mt={1}
+          >
             <Typography variant="h5" fontWeight="bold">
               {waitedRentals}
             </Typography>
@@ -141,7 +158,12 @@ useEffect(() => {
           <Typography variant="subtitle2" color="textSecondary">
             Toplam Gelir
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mt={1}
+          >
             <Typography variant="h5" fontWeight="bold">
               ₺{latestRevenue.toLocaleString("tr-TR")}
             </Typography>
@@ -198,7 +220,11 @@ useEffect(() => {
                   ))}
                 </Pie>
                 <Tooltip />
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+                <Legend
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>

@@ -11,7 +11,7 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded"; // Buto
 import { useRouter } from "next/navigation";
 import { Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useGridColumns } from "../_components/gridData";
 
 export default function Dashboard() {

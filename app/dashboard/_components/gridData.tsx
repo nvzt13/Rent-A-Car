@@ -3,9 +3,9 @@ import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress"; 
-import { toggleCarAvailability } from "@/lib/slice/carSlice"; // Import the action
-import { useAppDispatch } from "@/lib/hooks";
+import CircularProgress from "@mui/material/CircularProgress";
+import { toggleCarAvailability } from "@/lib/redux/slice/carSlice"; // Import the action
+import { useAppDispatch } from "@/lib/redux/hooks";
 import React from "react";
 
 // renderStatus fonksiyonu
@@ -72,7 +72,7 @@ export function useGridActions() {
     setLoadingRowId(id);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`/api/v1/car/${id}`, {
+      const response = await fetch(`/api/v2/cars/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

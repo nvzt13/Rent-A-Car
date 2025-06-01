@@ -11,7 +11,7 @@ const initialState: RentalState = {
 export const fetchRentals = createAsyncThunk('rentals/fetchRentals', async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch('/api/v1/rental', {
+    const response = await fetch('/api/v2/rental', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -19,7 +19,7 @@ export const fetchRentals = createAsyncThunk('rentals/fetchRentals', async () =>
     });
     if (response.ok) {
       const rentalsData = await response.json();
-      return rentalsData.allRentals;
+      return rentalsData.data;
     } else {
       alert('Randevular yolda kaldı');
       return [];
@@ -36,10 +36,9 @@ export const updateRental = createAsyncThunk(
   async ( id : number, { dispatch }) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/v1/rental/${id}`, {
+      const response = await fetch(`/api/v2/rental/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
@@ -65,7 +64,7 @@ export const deleteRental = createAsyncThunk(
   async (id: number, { dispatch }) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/v1/rental/${id}`, {
+      const response = await fetch(`/api/v2/rental/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

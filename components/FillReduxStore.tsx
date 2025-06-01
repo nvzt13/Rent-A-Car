@@ -1,19 +1,16 @@
-"use client"
-import { fetchCars } from '@/lib/slice/carSlice';
-import React, { useEffect } from 'react'
-import { useAppDispatch } from "@/lib/hooks";
-import { fetchRentals } from "@/lib/slice/rentalSlice";
+"use client";
+import { fetchCars } from "@/lib/redux/slice/carSlice";
+import React, { useEffect } from "react";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { fetchRentals } from "@/lib/redux/slice/rentalSlice";
 
 const FillReduxStore = () => {
-
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(fetchCars())
-    dispatch(fetchRentals())
+    dispatch(fetchCars());
+    dispatch(fetchRentals());
   }, [dispatch]);
-  return (
-    <div></div>
-  )
-}
+  return <div></div>;
+};
 
-export default FillReduxStore
+export default FillReduxStore;

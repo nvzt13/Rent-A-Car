@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { CreateCar } from "@/type/types";
 import { useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/lib/hooks";
-import { addCar, updateCar } from "@/lib/slice/carSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { addCar, updateCar } from "@/lib/redux/slice/carSlice";
 
 const AddCar = () => {
   const searchParams = useSearchParams();
@@ -38,23 +38,23 @@ const AddCar = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === "image") {
       // Google Drive dosya ID'sini al
       const match = value.match(/\/d\/([^/]+)/);
       const fileId = match?.[1];
-  
+
       // Eğer Google Drive linkiyse, uc formatına çevir
       const imageUrl = fileId
         ? `https://drive.google.com/uc?export=view&id=${fileId}`
         : value;
-  
+
       // Veritabanına kaydedilecek veri
       setCarData({
         ...carData,
         image: imageUrl,
       });
-  
+
       // Önizleme için gösterilecek görsel
       setImagePreview(imageUrl);
     } else {
@@ -64,7 +64,6 @@ const AddCar = () => {
       });
     }
   };
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,8 +81,8 @@ const AddCar = () => {
         formData.append(key, String(value ?? ""));
       });
       dispatch(updateCar({ carId: parseCarToBeUpdated.id, carData: formData }));
-    } else{
-      dispatch(addCar(formData))
+    } else {
+      dispatch(addCar(formData));
     }
   };
 
@@ -175,22 +174,22 @@ const AddCar = () => {
           margin="normal"
           required
         />
-<TextField
-  label="Fites"
-  name="gear" // Change to "gear" to match state
-  value={carData.gear} // Correctly bind the value
-  onChange={handleInputChange} // Handle input change
-  select
-  fullWidth
-  margin="normal"
-  required
->
-  {gear.map((item) => (
-    <MenuItem key={item} value={item}>
-      {item}
-    </MenuItem>
-  ))}
-</TextField>
+        <TextField
+          label="Fites"
+          name="gear" // Change to "gear" to match state
+          value={carData.gear} // Correctly bind the value
+          onChange={handleInputChange} // Handle input change
+          select
+          fullWidth
+          margin="normal"
+          required
+        >
+          {gear.map((item) => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           label="URL"
           name="image"

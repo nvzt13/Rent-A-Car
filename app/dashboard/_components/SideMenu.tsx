@@ -54,9 +54,15 @@ export default function MenuContent() {
     }
   }, [pathname]);
 
-  const handleLogout = (index: number) => {
+  const handleLogout = async (index: number) => {
     setSelectedIndex(index);
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    await fetch("/api/v2/admin/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
     router.push("/signin");
   };
 
