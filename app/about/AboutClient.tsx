@@ -10,12 +10,12 @@ const AboutClient = () => {
           Hakkımızda
         </h1>
         <p className="text-lg mb-4 text-center max-w-3xl mx-auto">
-          Rent-A-Car'a hoş geldiniz. Konfor, şıklık ve kolaylıkla yolculuğunuz burada başlıyor. 
+          Rent-A-Car&apos;a hoş geldiniz. Konfor, şıklık ve kolaylıkla yolculuğunuz burada başlıyor. 
           On yılı aşkın süredir müşterilerimize kaliteli kiralık araçlar sunuyor ve en iyi sürüş deneyimini yaşatıyoruz. 
           Misyonumuz, araç kiralamayı herkes için kolay, uygun fiyatlı ve erişilebilir hale getirmektir.
         </p>
         <p className="text-lg mb-4 text-center max-w-3xl mx-auto">
-          Kompakt araçlardan SUV'lara, lüks araçlardan geniş filoya kadar her türlü ihtiyacınıza hitap eden seçeneklerimizle 
+          Kompakt araçlardan SUV&apos;lara, lüks araçlardan geniş filoya kadar her türlü ihtiyacınıza hitap eden seçeneklerimizle 
           hizmetinizdeyiz. İster iş seyahati, ister hafta sonu kaçamağı, ister aile tatili olsun — sizin için mükemmel bir aracımız var.
         </p>
         <p className="text-lg mb-4 text-center max-w-3xl mx-auto">
@@ -24,7 +24,7 @@ const AboutClient = () => {
           her türlü soru ve sorununuzda size yardımcı olmaktan memnuniyet duyar.
         </p>
         <p className="text-lg text-center max-w-3xl mx-auto mb-10">
-          Rent-A-Car'ı tercih ettiğiniz için teşekkür ederiz. Yolculuğunuzu unutulmaz kılmak için sabırsızlanıyoruz.
+          Rent-A-Car&apos;ı tercih ettiğiniz için teşekkür ederiz. Yolculuğunuzu unutulmaz kılmak için sabırsızlanıyoruz.
         </p>
 
         {/* Harita Bölümü */}
