@@ -29,3 +29,12 @@ export interface RentalState {
   rentals: Rental[];
   loadingRental: boolean;
 }
+
+export interface RentalCreateType {
+  customerName: string;
+  phoneNumber: string;
+  takeHour?: string | null;
+  rentalDate: Date | string;
+  returnDate: Date | string;
+  carId: number | string;
+}

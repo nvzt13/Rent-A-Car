@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../prisma";
-import { Car } from "@prisma/client";
 
 export const getAllCars = async () => {
   try {
@@ -175,3 +174,33 @@ export const updateCar = async (id: string, formData: FormData) => {
     );
   }
 };
+
+export const toggleCarAvailability = async (id: string) => {
+  try {
+    // Önce mevcut arabanın durumunu al
+    const car = await prisma.car.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!car) {
+      return NextResponse.json(
+        { message: "Car not found" },
+        { status: 404 }
+      );
+    }
+
+    // Durumu tersine çevir
+    const updatedCar = await prisma.car.update({
+      where: { id: parseInt(id) },
+      data: { isAvailable: !car.isAvailable },
+    });
+
+    return NextResponse.json(updatedCar);
+  } catch (error) {
+    console.error("Toggle error:", error);
+    return NextResponse.json(
+      { message: "Failed to toggle availability", error },
+      { status: 500 }
+    );
+  }
+}

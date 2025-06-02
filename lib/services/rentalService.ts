@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../prisma";
+import { RentalCreateType } from "@/type/types";
 
 export const getAllRentals = async () => {
   try {
@@ -17,13 +18,13 @@ export const getAllRentals = async () => {
   }
 };
 
-export const createRental = async (body: any) => {
+export const createRental = async (body: RentalCreateType) => {
   try {
     const createRental = await prisma.rental.create({
       data: {
         customerName: body.customerName,
         phoneNumber: body.phoneNumber,
-        takeHour: body.takeHour || null,
+        takeHour: body.takeHour || "",
         rentalDate: new Date(body.rentalDate).toISOString(),
         returnDate: new Date(body.returnDate).toISOString(),
         carId: Number(body.carId),

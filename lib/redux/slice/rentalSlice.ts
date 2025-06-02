@@ -19,6 +19,7 @@ export const fetchRentals = createAsyncThunk('rentals/fetchRentals', async () =>
     });
     if (response.ok) {
       const rentalsData = await response.json();
+      console.log('Rentals fetched successfully:', rentalsData.data);
       return rentalsData.data;
     } else {
       alert('Randevular yolda kaldı');

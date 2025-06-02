@@ -1,9 +1,10 @@
+import { NextRequest } from 'next/server';
 import * as RentalService from '../services/rentalService';
 export const handlers = {
-    GET: (req: Request) => {
+    GET: () => {
         return RentalService.getAllRentals();
     },
-    POST: (req: Request) => {
+    POST: (req: NextRequest) => {
         return req.json().then((rentalData) => RentalService.createRental(rentalData));
     }
 }

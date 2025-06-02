@@ -40,7 +40,7 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `/api/v1/car/${formData.carId}/block-date`,
+          `/api/v2/cars/${formData.carId}/booked-days`,
           {
             headers: {
               "Content-Type": "application/json",

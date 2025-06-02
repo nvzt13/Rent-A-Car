@@ -56,7 +56,7 @@ const DashboardClient = () => {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const res = await fetch("/api/v1/statistic");
+        const res = await fetch("/api/v2/rental/statistic");
         const data = await res.json();
         const formatted = data?.data?.map((item: MonthlyReport) => ({
           month: `${item.month} ${item.year}`,
@@ -75,7 +75,7 @@ const DashboardClient = () => {
   const latestRevenue =
     rentalData?.length > 0 ? rentalData[rentalData.length - 1].revenue : 0;
   useEffect(() => {
-    fetch("/api/v1/visitor")
+    fetch("/api/v2/visitor")
       .then((res) => res.json())
       .then((data) => {
         setVisitorCounter(data.count);
@@ -210,7 +210,7 @@ const DashboardClient = () => {
                   outerRadius={100}
                   fill="#8884d8"
                   label
-                  isAnimationActive={false}
+                  isAnimationActive={true}
                 >
                   {pieData.map((entry, index) => (
                     <Cell
