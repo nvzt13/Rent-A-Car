@@ -138,7 +138,7 @@ const SingleCarClient = ({ id }: { id: string }) => {
             mb={2}
             textAlign="center"
           >
-            Pricing & Availability
+            Fiyat & Kullanılabilirlik
           </Typography>
           <Divider />
           <Typography
@@ -147,12 +147,12 @@ const SingleCarClient = ({ id }: { id: string }) => {
             mt={2}
             textAlign="center"
           >
-            Price: {car.price}{" "}
+            Fiyat: {car.price}{" "}
             <CurrencyLiraIcon
               fontSize="small"
               sx={{ verticalAlign: "middle" }}
             />{" "}
-            / day
+            / gün
           </Typography>
           <Box display="flex" justifyContent="center" mt={2}>
             <Chip

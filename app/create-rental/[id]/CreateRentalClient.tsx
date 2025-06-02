@@ -9,9 +9,9 @@ import {
   FormControl,
   Select,
   InputLabel,
+  collapseClasses,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Car } from "@prisma/client";
 import { RootState } from "@/lib/redux/store";
@@ -19,7 +19,13 @@ import { SelectChangeEvent } from "@mui/material";
 interface RentalClientProps {
   id: number;
 }
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
+import { registerLocale } from "react-datepicker";
+import tr from "date-fns/locale/tr";
+
+registerLocale("tr", tr);
 const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
   const cars = useSelector((state: RootState) => state.cars.cars);
   const [blockDays, setBlockDays] = useState<string[]>([]);
@@ -149,8 +155,13 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
         backgroundColor: "white",
       }}
     >
-      <Typography variant="h5" align="center" gutterBottom>
-        Rent a Car Form
+      <Typography
+        variant="h5"
+        align="center"
+        gutterBottom
+        sx={{ fontWeight: "bold", mb: 2, color: "primary.main" }}
+      >
+        Araç Kiralama Formu
       </Typography>
 
       <TextField
@@ -162,7 +173,7 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       />
 
       <TextField
-        label="Phone Number"
+        label="Telefon Numarası"
         name="phoneNumber"
         type="tel"
         value={formData.phoneNumber}
@@ -171,7 +182,6 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       />
 
       <FormControl required>
-        <InputLabel id="car-select-label">Car</InputLabel>
         <Select
           labelId="car-select-label"
           name="carId"
@@ -197,20 +207,25 @@ const RentalClient: React.FC<RentalClientProps> = ({ id }) => {
       <DatePicker
         selected={startDate}
         onChange={(date) => setStartDate(date)}
-        placeholderText="Rental Date"
+        placeholderText="Kiralama Tarihi"
         minDate={new Date()}
         filterDate={(date) => !isDateBlocked(date)}
+        locale="tr"
+        className="text-gray-900 rounded p-2"
       />
 
       <DatePicker
         selected={endDate}
         onChange={(date) => setEndDate(date)}
-        placeholderText="Return Date"
+        placeholderText="İade Tarihi"
         minDate={startDate || new Date()}
         filterDate={(date) => !isDateBlocked(date)}
+        locale="tr"
+        className="text-gray-900 rounded p-2"
       />
+
       <Button variant="contained" color="primary" type="submit">
-        Submit
+        Gönder
       </Button>
     </Box>
   );

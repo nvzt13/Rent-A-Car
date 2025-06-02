@@ -11,7 +11,7 @@ const page = async ({ params }: { params: Promise<Params> }) => {
   const {id} = resolveParams
 
   return (
-    <div>
+    <div className="bg-white p-4 rounded-lg shadow-md">
       <SingleCarClient id={id} />
     </div>
   )

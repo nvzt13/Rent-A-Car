@@ -1,5 +1,9 @@
+'use client';
 import React, { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
+import 'dayjs/locale/tr'; // Türkçe desteği
+dayjs.locale('tr'); // varsayılan dil
+
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -14,7 +18,7 @@ export default function Calender({ busyDates }: CalendarProps) {
   const [value, setValue] = useState<Dayjs>(dayjs());
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
       <DemoContainer components={['DateCalendar']}>
         <DemoItem>
           <DateCalendar

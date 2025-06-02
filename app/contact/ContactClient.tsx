@@ -40,8 +40,8 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-800">Bize Ulaşın</h2>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow text-gray-800">
+      <h2 className="text-2xl font-bold mb-4">Bize Ulaşın</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -50,7 +50,7 @@ export default function ContactPage() {
           onChange={handleChange}
           placeholder="Adınız"
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded "
         />
         <input
           type="email"

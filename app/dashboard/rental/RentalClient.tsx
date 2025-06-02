@@ -286,6 +286,7 @@ const RentalClient = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: 2,
+              color: "text.primary",
             }}
           >
             <Calender busyDates={selectedRental ? busyDates : []} />

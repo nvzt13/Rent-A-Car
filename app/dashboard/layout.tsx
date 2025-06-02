@@ -5,7 +5,7 @@ const Layout = ({ children }: Readonly<{
   children: React.ReactNode;
 }>) => {
   return (
-    <div className="flex">
+    <div className="flex bg-gray-100 min-h-screen">
    <AppNavbar />
       <div className="hidden md:block md:w-1/4 lg:w-1/5">
         <SideMenu />

@@ -58,11 +58,27 @@ const DashboardClient = () => {
       try {
         const res = await fetch("/api/v2/rental/statistic");
         const data = await res.json();
+        const monthMap: { [key: string]: string } = {
+          January: "Ocak",
+          February: "Şubat",
+          March: "Mart",
+          April: "Nisan",
+          May: "Mayıs",
+          June: "Haziran",
+          July: "Temmuz",
+          August: "Ağustos",
+          September: "Eylül",
+          October: "Ekim",
+          November: "Kasım",
+          December: "Aralık",
+        };
+        
         const formatted = data?.data?.map((item: MonthlyReport) => ({
-          month: `${item.month} ${item.year}`,
+          month: `${monthMap[item.month]} ${item.year}`,
           revenue: item.totalIncome,
           rentals: item.totalRentals,
         }));
+        
         setRentalData(formatted);
       } catch (err) {
         console.error("İstatistik verisi alınamadı:", err);
@@ -231,19 +247,21 @@ const DashboardClient = () => {
         </Card>
 
         {/* Kiralama Sayıları */}
-        <Card>
-          <CardContent>
-            <Typography variant="h6">Araç Kiralama Sayıları</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={rentalData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="rentals" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      {/* Kiralama Sayıları */}
+<Card>
+  <CardContent>
+    <Typography variant="h6">Araç Kiralama Sayıları</Typography>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={rentalData}>
+        <XAxis dataKey="month" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="rentals" fill="#8884d8" />
+      </BarChart>
+    </ResponsiveContainer>
+  </CardContent>
+</Card>
+
       </div>
     </div>
   );

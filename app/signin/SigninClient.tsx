@@ -177,11 +177,11 @@ export default function SignIn () {
         <SignInContainer direction="column" justifyContent="space-between">
           <Card variant="outlined">
             <Typography component="h1" variant="h4" sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}>
-              Sign in
+              Giriş Yap
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: "flex", flexDirection: "column", width: "100%", gap: 2 }}>
               <FormControl>
-                <FormLabel htmlFor="username">Username</FormLabel>
+                <FormLabel htmlFor="username">Kullanıcı Adı</FormLabel>
                 <TextField
                   error={usernameError}
                   helperText={usernameErrorMessage}
@@ -197,7 +197,7 @@ export default function SignIn () {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
+                <FormLabel htmlFor="password">Şifre</FormLabel>
                 <TextField
                   error={passwordError}
                   helperText={passwordErrorMessage}
@@ -218,7 +218,7 @@ export default function SignIn () {
                 variant="outlined"
                 loading={loading}
               >
-                Sign in
+              Giriş Yap
               </LoadingButton>
             </Box>
           </Card>

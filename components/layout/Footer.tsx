@@ -19,7 +19,6 @@ const StyledFooter = styled(Box)(({ theme }) => ({
   color: theme.palette.common.white,
   paddingTop: theme.spacing(6),
   paddingBottom: theme.spacing(6),
-  marginTop: theme.spacing(6),
   [theme.breakpoints.up("sm")]: {
     paddingLeft: 20,
     paddingRight: 20,
